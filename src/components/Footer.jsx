@@ -1,24 +1,28 @@
-import { motion } from 'framer-motion';
-import { Github, Linkedin, Twitter, Mail, Heart, ArrowUp } from 'lucide-react';
+import { motion } from "framer-motion";
+import { Github, Linkedin, Twitter, Mail, Heart, ArrowUp } from "lucide-react";
 
 const links = [
-  { label: 'About', href: '#about' },
-  { label: 'Skills', href: '#skills' },
-  { label: 'Projects', href: '#projects' },
-  { label: 'Experience', href: '#experience' },
-  { label: 'Education', href: '#education' },
-  { label: 'Contact', href: '#contact' },
+  { label: "About", href: "#about" },
+  { label: "Skills", href: "#skills" },
+  { label: "Projects", href: "#projects" },
+  { label: "Experience", href: "#experience" },
+  { label: "Education", href: "#education" },
+  { label: "Contact", href: "#contact" },
 ];
 
 const socials = [
-  { icon: Github, href: 'https://github.com/', label: 'GitHub' },
-  { icon: Linkedin, href: 'https://linkedin.com/', label: 'LinkedIn' },
-  { icon: Twitter, href: 'https://twitter.com/', label: 'Twitter' },
-  { icon: Mail, href: 'mailto:your@email.com', label: 'Email' },
+  { icon: Github, href: "https://github.com/Devanandfarkade", label: "GitHub" },
+  {
+    icon: Linkedin,
+    href: "https://linkedin.com/in/devanandfarkade",
+    label: "LinkedIn",
+  },
+  { icon: Twitter, href: "https://twitter.com/", label: "Twitter" },
+  { icon: Mail, href: "mailto:devaapatil330@gmail.com", label: "Email" },
 ];
 
 export default function Footer() {
-  const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
   return (
     <footer className="relative bg-surface/40 border-t border-purple-900/20 overflow-hidden">
@@ -29,9 +33,15 @@ export default function Footer() {
         <div className="grid md:grid-cols-3 gap-10 mb-12">
           {/* Brand */}
           <div>
-            <a href="#hero" className="font-syne font-bold text-2xl gradient-text mb-4 block">{'<Dev />'}</a>
+            <a
+              href="#hero"
+              className="font-syne font-bold text-2xl gradient-text mb-4 block"
+            >
+              {"<Dev />"}
+            </a>
             <p className="font-dm text-sm text-text-secondary leading-relaxed max-w-xs">
-              MERN Stack Developer crafting performant, accessible, and visually stunning digital experiences.
+              MERN Stack Developer crafting performant, accessible, and visually
+              stunning digital experiences.
             </p>
             <div className="flex gap-3 mt-6">
               {socials.map(({ icon: Icon, href, label }) => (
@@ -52,7 +62,9 @@ export default function Footer() {
 
           {/* Quick links */}
           <div>
-            <h4 className="font-syne font-semibold text-text-primary mb-5">Quick Links</h4>
+            <h4 className="font-syne font-semibold text-text-primary mb-5">
+              Quick Links
+            </h4>
             <ul className="grid grid-cols-2 gap-2">
               {links.map(({ label, href }) => (
                 <li key={label}>
@@ -69,7 +81,9 @@ export default function Footer() {
 
           {/* Availability CTA */}
           <div>
-            <h4 className="font-syne font-semibold text-text-primary mb-5">Work Together</h4>
+            <h4 className="font-syne font-semibold text-text-primary mb-5">
+              Work Together
+            </h4>
             <p className="font-dm text-sm text-text-secondary mb-4">
               Looking for a dedicated developer? Let's build something great.
             </p>
@@ -86,9 +100,10 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="border-t border-purple-900/20 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="font-dm text-sm text-muted flex items-center gap-1.5">
-            Built with <Heart size={13} className="text-red-400 fill-red-400" /> using React, Tailwind & Three.js
-            <span className="mx-1">·</span>
-            © {new Date().getFullYear()} Your Name
+            Built with <Heart size={13} className="text-red-400 fill-red-400" />{" "}
+            using React, Tailwind & Three.js
+            <span className="mx-1">·</span>© {new Date().getFullYear()} Your
+            Name
           </p>
 
           <motion.button

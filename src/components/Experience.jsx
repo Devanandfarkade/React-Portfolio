@@ -6,20 +6,19 @@ import SectionTitle from "./SectionTitle";
 const experiences = [
   {
     id: 1,
-    role: "Senior Frontend Developer",
-    company: "TechCorp Solutions",
-    location: "Remote",
-    period: "Jan 2024 – Present",
+    role: "Frontend Developer",
+    company: "Rajyug IT Solutions",
+    location: "Pune, India",
+    period: "Dec 2025 – Present",
     type: "Full-time",
     color: "#a855f7",
-    desc: "Led development of the company's flagship SaaS product using React and TypeScript. Improved performance by 45% and reduced bundle size by 30%.",
+    desc: "Led development of the company's flagship SaaS product using React and TypeScript. Collaborated with cross-functional teams to deliver new features and improve performance.",
     points: [
-      "Built 15+ reusable UI components adopted across 3 products",
+      "Built 15+ reusable UI components adopted across 10 products",
       "Integrated GraphQL APIs and optimized data fetching with React Query",
-      "Mentored 2 junior developers and conducted code reviews",
       "Implemented CI/CD pipelines with GitHub Actions",
     ],
-    tech: ["React", "TypeScript", "GraphQL", "Tailwind", "Jest"],
+    tech: ["React", "TypeScript", "JavaScript", "GraphQL", "Tailwind", "Jest"],
   },
   {
     id: 2,
@@ -29,7 +28,7 @@ const experiences = [
     period: "Jun 2022 – Dec 2023",
     type: "Freelance",
     color: "#06b6d4",
-    desc: "Delivered 10+ full-stack web applications for clients across e-commerce, SaaS, and service industries.",
+    desc: "Delivered 5+ full-stack web applications for clients across e-commerce, SaaS, and service industries.",
     points: [
       "Developed full-stack apps using React, Node.js, Express, and MongoDB",
       "Integrated payment gateways (Stripe, Razorpay) for 3 e-commerce projects",
@@ -41,9 +40,9 @@ const experiences = [
   {
     id: 3,
     role: "Frontend Developer Intern",
-    company: "StartupXYZ",
+    company: "Zidio Technologies",
     location: "Pune, India",
-    period: "Jan 2022 – May 2022",
+    period: "Sep 2025 – Nov 2025",
     type: "Internship",
     color: "#f59e0b",
     desc: "Contributed to building the company's React-based web app. Worked closely with designers to implement pixel-perfect UIs.",

@@ -27,33 +27,38 @@ html {
 body {
   background-color: var(--bg);
   color: var(--text-primary);
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   overflow-x: hidden;
-  cursor: none;
 }
 
-/* Custom cursor */
-.custom-cursor {
-  width: 12px;
-  height: 12px;
-  background: var(--accent);
-  border-radius: 50%;
-  position: fixed;
-  pointer-events: none;
-  z-index: 99999;
-  transition: transform 0.1s ease;
-  mix-blend-mode: difference;
-}
+/* Custom cursor - disabled on mobile */
+@media (min-width: 769px) {
+  body {
+    cursor: none;
+  }
 
-.cursor-follower {
-  width: 36px;
-  height: 36px;
-  border: 1px solid rgba(168, 85, 247, 0.5);
-  border-radius: 50%;
-  position: fixed;
-  pointer-events: none;
-  z-index: 99998;
-  transition: all 0.15s ease;
+  .custom-cursor {
+    width: 12px;
+    height: 12px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 99999;
+    transition: transform 0.1s ease;
+    mix-blend-mode: difference;
+  }
+
+  .cursor-follower {
+    width: 36px;
+    height: 36px;
+    border: 1px solid rgba(168, 85, 247, 0.5);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 99998;
+    transition: all 0.15s ease;
+  }
 }
 
 /* Custom scrollbar */
@@ -89,12 +94,16 @@ body {
 /* Glowing borders */
 .glow-border {
   border: 1px solid rgba(168, 85, 247, 0.3);
-  box-shadow: 0 0 20px rgba(168, 85, 247, 0.1), inset 0 0 20px rgba(168, 85, 247, 0.03);
+  box-shadow:
+    0 0 20px rgba(168, 85, 247, 0.1),
+    inset 0 0 20px rgba(168, 85, 247, 0.03);
 }
 
 .glow-border:hover {
   border-color: rgba(168, 85, 247, 0.6);
-  box-shadow: 0 0 30px rgba(168, 85, 247, 0.2), inset 0 0 30px rgba(168, 85, 247, 0.05);
+  box-shadow:
+    0 0 30px rgba(168, 85, 247, 0.2),
+    inset 0 0 30px rgba(168, 85, 247, 0.05);
 }
 
 /* Section pattern */
@@ -102,7 +111,7 @@ body {
   position: relative;
 }
 .noise-bg::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
@@ -121,22 +130,88 @@ body {
 
 /* Shimmer animation */
 @keyframes shimmer {
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
 }
 
 .shimmer {
-  background: linear-gradient(90deg, transparent 0%, rgba(168,85,247,0.15) 50%, transparent 100%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(168, 85, 247, 0.15) 50%,
+    transparent 100%
+  );
   background-size: 200% 100%;
   animation: shimmer 3s ease-in-out infinite;
 }
 
 /* Typing cursor blink */
 @keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
 }
 
 .typing-cursor {
   animation: blink 1s step-end infinite;
+}
+
+/* Mobile responsiveness improvements */
+@media (max-width: 768px) {
+  .gradient-text-purple {
+    background-size: 200% auto;
+    animation: gradientShift 3s ease infinite;
+  }
+
+  /* Reduce glow effects on mobile for performance */
+  .glow-border {
+    box-shadow: none;
+  }
+
+  .glow-border:hover {
+    box-shadow: none;
+  }
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Smooth touch handling - improved for mobile */
+@media (max-width: 768px) {
+  * {
+    touch-action: pan-y pinch-zoom;
+  }
+
+  /* Prevent pull-to-refresh on 3D area */
+  .touch-3d-area {
+    touch-action: none;
+  }
+}
+
+/* Performance optimizations for mobile */
+@media (max-width: 768px) {
+  .noise-bg::before {
+    opacity: 0.1;
+  }
+
+  .grid-bg {
+    background-size: 40px 40px;
+  }
 }

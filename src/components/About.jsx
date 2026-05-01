@@ -139,7 +139,7 @@ export default function About() {
                 Let's Talk
               </a>
               <a
-                href="/resume.pdf"
+                href="https://www.overleaf.com/project/69f4ccd2a77545648f1565de"
                 download
                 className="px-6 py-3 border border-purple-500/30 text-text-secondary font-dm font-medium rounded-xl hover:border-accent/60 hover:text-text-primary hover:bg-purple-500/5 transition-all duration-300 hover:-translate-y-0.5"
               >

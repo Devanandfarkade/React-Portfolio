@@ -101,7 +101,7 @@ export default function Navbar() {
           {/* CTA + Mobile Toggle */}
           <div className="flex items-center gap-3">
             <motion.a
-              href="/resume.pdf"
+              href="https://www.overleaf.com/project/69f4ccd2a77545648f1565de"
               download
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}

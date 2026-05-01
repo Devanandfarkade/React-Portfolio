@@ -25,14 +25,14 @@ const contactInfo = [
   {
     icon: Phone,
     label: "Phone",
-    value: "+91 98765 43210",
-    href: "tel:+919876543210",
+    value: "+91 9518331190",
+    href: "tel:+919518331190",
     color: "#06b6d4",
   },
   {
     icon: MapPin,
     label: "Location",
-    value: "Gondia, Maharashtra, India",
+    value: "Pune, Maharashtra, India",
     href: null,
     color: "#f59e0b",
   },
@@ -42,13 +42,13 @@ const socials = [
   {
     icon: Github,
     label: "GitHub",
-    href: "https://github.com/",
+    href: "https://github.com/Devanandfarkade",
     color: "#ffffff",
   },
   {
     icon: Linkedin,
     label: "LinkedIn",
-    href: "https://linkedin.com/",
+    href: "https://linkedin.com/in/devanandfarkade",
     color: "#0077b5",
   },
   {
