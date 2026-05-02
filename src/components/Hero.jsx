@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import DotField from "./DotField";
 import Scene3D from "./3D/Scene3D";
+import DecryptedText from "./DecryptedText";
 
 const roles = [
   "MERN Stack Developer",
@@ -59,7 +60,7 @@ const socials = [
   { icon: Github, href: "https://github.com/", label: "GitHub" },
   { icon: Linkedin, href: "https://linkedin.com/", label: "LinkedIn" },
   { icon: Twitter, href: "https://twitter.com/", label: "Twitter" },
-  { icon: Mail, href: "mailto:your@email.com", label: "Email" },
+  { icon: Mail, href: "mailto:devaapatil330@gmail.com", label: "Email" },
 ];
 
 const stats = [
@@ -70,6 +71,12 @@ const stats = [
 ];
 
 export default function Hero() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 768);
+  }, []);
+
   return (
     <section
       id="hero"
@@ -110,7 +117,7 @@ export default function Hero() {
       <div className="absolute inset-0 z-[3] bg-gradient-to-r from-bg via-bg/80 to-transparent pointer-events-none" />
 
       {/* Content */}
-      <div className="absolute left-20 top-0 z-[4] flex flex-col justify-left min-h-screen  mx-auto px-0 lg:px-12 py-24">
+      <div className="absolute left-20 top-0 z-[4] flex flex-col justify-left min-h-screen mx-auto px-0 lg:px-12 py-24">
         <div className="max-w-2xl">
           {/* Badge */}
           <motion.div
@@ -146,18 +153,26 @@ export default function Hero() {
             <TypingText texts={roles} />
           </motion.div>
 
-          {/* Description */}
-          <motion.p
+          {/* Description with DecryptedText - SMOOTH SEQUENTIAL */}
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.45 }}
             className="font-dm text-text-secondary text-base sm:text-lg leading-relaxed mb-10 max-w-xl"
           >
-            I craft fast, accessible, and visually stunning web applications
-            using the{" "}
-            <span className="text-accent font-medium">MERN stack</span>.
-            Passionate about pixel-perfect UIs and scalable architectures.
-          </motion.p>
+            <DecryptedText
+              text="I craft fast, accessible, and visually stunning web applications using the MERN stack. Passionate about pixel-perfect UIs and scalable architectures."
+              speed={80}
+              sequential={true}
+              revealDirection="start"
+              useOriginalCharsOnly={false}
+              animateOn="view"
+              className="text-text-secondary"
+              parentClassName="inline-block"
+              encryptedClassName="text-purple-400/40"
+              characters="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+[]{}|;:,.<>?"
+            />
+          </motion.div>
 
           {/* CTA Buttons */}
           <motion.div
@@ -192,7 +207,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.9 }}
-          className="  bottom-28 mt-1 left-6 lg:left-12 flex gap-8"
+          className="bottom-28 mt-1 left-6 lg:left-12 flex gap-8"
         >
           {stats.map(({ value, label }) => (
             <div key={label} className="text-center">

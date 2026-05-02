@@ -37,7 +37,7 @@ export default function Footer() {
               href="#hero"
               className="font-syne font-bold text-2xl gradient-text mb-4 block"
             >
-              {"<Dev />"}
+              {"<Devaa />"}
             </a>
             <p className="font-dm text-sm text-text-secondary leading-relaxed max-w-xs">
               MERN Stack Developer crafting performant, accessible, and visually
