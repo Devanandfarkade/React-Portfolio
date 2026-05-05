@@ -28,3 +28,4 @@ jobs:
       # 4. Push Docker Image
       - name: Push Docker Image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/react-portfolio:latest
+      # 5. Deploy to Heroku (FIXED 🔥)
