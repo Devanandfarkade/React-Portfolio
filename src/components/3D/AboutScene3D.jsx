@@ -34,12 +34,12 @@ function AIRobotModel() {
     useFrame(({ clock }) => {
         if (!ref.current) return;
         ref.current.rotation.y = clock.elapsedTime * 0.45;
-        ref.current.position.y = -0.8 + Math.sin(clock.elapsedTime * 1.1) * 0.1;
+        ref.current.position.y = (isMobile ? -0.8 : -1.2) + Math.sin(clock.elapsedTime * 1.1) * 0.1;
     });
 
     return (
         <Float speed={isMobile ? 1 : 1.2} floatIntensity={isMobile ? 0.4 : 0.6} rotationIntensity={0.2}>
-            <primitive ref={ref} object={scene} scale={isMobile ? 1.5 : 2.2} position={[0, -0.8, 0]} />
+            <primitive ref={ref} object={scene} scale={isMobile ? 2.2 : 3.5} position={[0, isMobile ? -0.8 : -1.2, 0]} />
         </Float>
     );
 }
@@ -204,3 +204,5 @@ export default function AboutScene3D({ height = "100%" }) {
         </div>
     );
 }
+
+useGLTF.preload("/ai_robot.glb");

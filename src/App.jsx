@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
@@ -10,8 +11,23 @@ import HackerTerminal from './components/HackerTerminal';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import CustomCursor from './components/CustomCursor';
+import EmailTemplate from './components/EmailTemplate';
 
 export default function App() {
+  const [hash, setHash] = useState(window.location.hash);
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      setHash(window.location.hash);
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
+  if (hash === '#email-template') {
+    return <EmailTemplate />;
+  }
+
   return (
     <div className="min-h-screen bg-bg text-text-primary scanline-overlay">
       <CustomCursor />
@@ -38,3 +54,4 @@ export default function App() {
     </div>
   );
 }
+

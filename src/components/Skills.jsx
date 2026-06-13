@@ -5,6 +5,7 @@ import { FaJava, FaServer } from "react-icons/fa";
 import SectionTitle from "./SectionTitle";
 import SkillsScene from "./3D/SkillsScene";
 import ViewportCanvas from "./ViewportCanvas";
+import { useScrollIndicator, ScrollIndicator } from "./ScrollIndicator";
 
 const categories = ["ALL", "FRONTEND", "BACKEND", "TOOLS"];
 const skills = [
@@ -56,6 +57,8 @@ function SkillBar({ skill, delay }) {
 export default function Skills() {
   const [activeTab, setActiveTab] = useState("ALL");
   const filtered = activeTab === "ALL" ? skills : skills.filter((s) => s.cat === activeTab);
+  const scrollRef = useRef(null);
+  const showIndicator = useScrollIndicator(scrollRef);
 
   return (
     <section id="skills" className="relative lg:h-screen lg:max-h-screen lg:min-h-[600px] flex items-center py-12 lg:py-0 bg-surface/10 overflow-hidden hacker-grid">
@@ -76,8 +79,8 @@ export default function Skills() {
           </div>
 
           {/* Skills (Right Column) */}
-          <div className="cyber-card p-6 lg:p-8 rounded-3xl flex flex-col justify-between max-h-[58vh] lg:max-h-[62vh]">
-            <div className="flex-1 overflow-y-auto pr-3 cyber-scrollbar">
+          <div className="cyber-card p-6 lg:p-8 rounded-3xl flex flex-col justify-between max-h-[60vh] lg:max-h-[72vh] relative">
+            <div ref={scrollRef} className="flex-1 overflow-y-auto pr-3 cyber-scrollbar">
               <div className="flex flex-wrap gap-2 mb-6">
                 {categories.map((cat) => (
                   <motion.button key={cat} onClick={() => setActiveTab(cat)} whileTap={{ scale: 0.96 }}
@@ -96,6 +99,8 @@ export default function Skills() {
                 </motion.div>
               </AnimatePresence>
             </div>
+
+            <ScrollIndicator visible={showIndicator} className="bottom-[100px]" />
 
             {/* Soft skills footer panel */}
             <div className="border-t border-accent-2/20 pt-5 mt-4">

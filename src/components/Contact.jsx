@@ -1,6 +1,5 @@
 import { useState, useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import emailjs from "@emailjs/browser";
 import {
   Mail,
   Phone,
@@ -11,6 +10,7 @@ import {
   ShieldAlert,
   CheckCircle,
   Loader,
+  Eye,
 } from "lucide-react";
 import SectionTitle from "./SectionTitle";
 
@@ -110,12 +110,9 @@ export default function Contact() {
     setStatus("loading");
 
     try {
-      await emailjs.send(
-        "service_9mhpnzo",
-        "template_cu3c3is",
-        form,
-        "E8kFEbVpsCQ2eZXD0"
-      );
+      // Simulated secure API transmission pipeline (will integrate with backend later)
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      console.log("Transmission Packet Routed Successfully:", form);
       setStatus("success");
       setForm({ name: "", email: "", subject: "", message: "" });
       setTimeout(() => setStatus("idle"), 4000);
@@ -232,7 +229,7 @@ export default function Contact() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="lg:col-span-3 flex"
           >
-            <div className="p-6 lg:p-8 rounded-3xl cyber-card flex-1 flex flex-col justify-center max-h-[58vh] lg:max-h-[62vh]">
+            <div className="p-6 lg:p-8 rounded-3xl cyber-card flex-1 flex flex-col justify-center max-h-[60vh] lg:max-h-[72vh]">
               <div className="w-full overflow-y-auto cyber-scrollbar pr-2 max-h-full">
                 {status === "success" ? (
                   <motion.div
@@ -297,25 +294,37 @@ export default function Contact() {
                       textarea
                     />
 
-                    <motion.button
-                      type="submit"
-                      disabled={status === "loading"}
-                      whileHover={{ scale: 1.01 }}
-                      whileTap={{ scale: 0.99 }}
-                      className="w-full flex items-center justify-center gap-2 px-6 py-3.5 btn-hacker font-bold rounded-xl disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-300 text-xs"
-                    >
-                      {status === "loading" ? (
-                        <>
-                          <Loader size={14} className="animate-spin" />
-                          TRANSMITTING...
-                        </>
-                      ) : (
-                        <>
-                          <Send size={14} />
-                          SEND MESSAGE
-                        </>
-                      )}
-                    </motion.button>
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <motion.button
+                        type="submit"
+                        disabled={status === "loading"}
+                        whileHover={{ scale: 1.01 }}
+                        whileTap={{ scale: 0.99 }}
+                        className="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 btn-hacker font-bold rounded-xl disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-300 text-xs"
+                      >
+                        {status === "loading" ? (
+                          <>
+                            <Loader size={14} className="animate-spin" />
+                            TRANSMITTING...
+                          </>
+                        ) : (
+                          <>
+                            <Send size={14} />
+                            SEND MESSAGE
+                          </>
+                        )}
+                      </motion.button>
+
+                      <a
+                        href="#email-template"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center gap-2 px-5 py-3.5 border border-accent-2/30 text-accent-2 hover:bg-accent-2/5 rounded-xl hover:-translate-y-0.5 transition-all duration-300 backdrop-blur-sm text-xs font-mono-hacker font-bold"
+                      >
+                        <Eye size={13} />
+                        VIEW_TEMPLATE_SPEC
+                      </a>
+                    </div>
                   </form>
                 )}
               </div>

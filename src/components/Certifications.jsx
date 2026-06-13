@@ -4,6 +4,7 @@ import { Award, ExternalLink, Calendar, CheckCircle } from 'lucide-react';
 import SectionTitle from './SectionTitle';
 import CertsScene from './3D/CertsScene';
 import ViewportCanvas from './ViewportCanvas';
+import { useScrollIndicator, ScrollIndicator } from './ScrollIndicator';
 
 const certs = [
   { id: 1, title: 'Java Full Stack Development', issuer: 'QSpiders Wakad, Pune', date: 'Mar 2023 - Sep 2023', credId: 'QS-JFS-2023', link: 'https://qspiders.com', color: '#39ff14', icon: '☕', skills: ['Java', 'SQL', 'Web Technologies', 'J2EE'] },
@@ -51,6 +52,9 @@ function CertCard({ cert, index }) {
 }
 
 export default function Certifications() {
+  const scrollRef = useRef(null);
+  const showIndicator = useScrollIndicator(scrollRef);
+
   return (
     <section id="certifications" className="relative lg:h-screen lg:max-h-screen lg:min-h-[600px] flex items-center py-12 lg:py-0 bg-surface/5 overflow-hidden hacker-grid">
       <div className="absolute inset-0 bg-gradient-to-b from-bg via-transparent to-bg pointer-events-none" />
@@ -70,12 +74,14 @@ export default function Certifications() {
           </div>
 
           {/* Cert cards list (Right Column - matching height) */}
-          <div className="cyber-card p-6 lg:p-8 rounded-3xl flex flex-col justify-between max-h-[58vh] lg:max-h-[62vh]">
-            <div className="flex-1 overflow-y-auto pr-3 cyber-scrollbar">
+          <div className="cyber-card p-6 lg:p-8 rounded-3xl flex flex-col justify-between max-h-[60vh] lg:max-h-[72vh] relative">
+            <div ref={scrollRef} className="flex-1 overflow-y-auto pr-3 cyber-scrollbar">
               <div className="grid sm:grid-cols-2 gap-3.5">
                 {certs.map((cert, i) => <CertCard key={cert.id} cert={cert} index={i} />)}
               </div>
             </div>
+
+            <ScrollIndicator visible={showIndicator} className="bottom-[70px]" />
             <div className="border-t border-accent-2/20 pt-4 mt-6 text-left font-mono-hacker text-[10px] text-accent-2/50">
               SYS_LOG: CREDENTIAL INDEX LOADED. STATUS: OK
             </div>

@@ -5,6 +5,8 @@ export default function CustomCursor() {
   const followerRef = useRef(null);
   const posRef = useRef({ x: -100, y: -100 });
   const followerPos = useRef({ x: -100, y: -100 });
+  const isHovered = useRef(false);
+  const isOverInput = useRef(false);
   const rafRef = useRef(null);
 
   useEffect(() => {
@@ -13,46 +15,65 @@ export default function CustomCursor() {
 
     const onMove = (e) => {
       posRef.current = { x: e.clientX, y: e.clientY };
-      if (dot) {
-        dot.style.transform = `translate(${e.clientX - 6}px, ${e.clientY - 6}px)`;
-      }
     };
 
     function animate() {
-      followerPos.current.x +=
-        (posRef.current.x - followerPos.current.x) * 0.12;
-      followerPos.current.y +=
-        (posRef.current.y - followerPos.current.y) * 0.12;
-      if (follower) {
-        follower.style.transform = `translate(${followerPos.current.x - 18}px, ${followerPos.current.y - 18}px)`;
+      // 1. Move custom-cursor dot instantly using hardware-accelerated translate3d (gentle scale=1.5 on hover)
+      if (dot) {
+        dot.style.transform = `translate3d(${posRef.current.x - 4}px, ${posRef.current.y - 4}px, 0) scale(${isHovered.current ? 1.5 : 1})`;
+        dot.style.opacity = isOverInput.current ? "0" : "1";
       }
+      
+      // 2. Smoothly interpolate follower position and scale up gently to 1.2 on hover
+      followerPos.current.x += (posRef.current.x - followerPos.current.x) * 0.18;
+      followerPos.current.y += (posRef.current.y - followerPos.current.y) * 0.18;
+      
+      if (follower) {
+        follower.style.transform = `translate3d(${followerPos.current.x - 14}px, ${followerPos.current.y - 14}px, 0) scale(${isHovered.current ? 1.2 : 1})`;
+        follower.style.opacity = isOverInput.current ? "0" : "1";
+      }
+      
       rafRef.current = requestAnimationFrame(animate);
     }
 
-    const onEnterLink = () => {
-      if (dot) dot.style.transform += " scale(5.5)";
-      if (follower) follower.style.opacity = "10";
+    // Dynamic event delegation for input visibility hiding and button hover glows
+    const onMouseOver = (e) => {
+      const target = e.target;
+      if (target && target.closest("input, textarea, select")) {
+        isOverInput.current = true;
+      } else if (target && target.closest("a, button, [role='button']")) {
+        isHovered.current = true;
+        if (follower) {
+          follower.style.borderColor = "rgba(57, 255, 20, 0.8)";
+          follower.style.boxShadow = "0 0 6px rgba(57, 255, 20, 0.25)";
+        }
+      }
     };
-    const onLeaveLink = () => {
-      if (follower) follower.style.opacity = "1";
+
+    const onMouseOut = (e) => {
+      const target = e.target;
+      if (target && target.closest("input, textarea, select")) {
+        isOverInput.current = false;
+      } else if (target && target.closest("a, button, [role='button']")) {
+        isHovered.current = false;
+        if (follower) {
+          follower.style.borderColor = "rgba(57, 255, 20, 0.4)";
+          follower.style.boxShadow = "0 0 8px rgba(0, 229, 255, 0.15)";
+        }
+      }
     };
 
     window.addEventListener("mousemove", onMove, { passive: true });
+    window.addEventListener("mouseover", onMouseOver, { passive: true });
+    window.addEventListener("mouseout", onMouseOut, { passive: true });
+    
     rafRef.current = requestAnimationFrame(animate);
-
-    const links = document.querySelectorAll("a, button");
-    links.forEach((el) => {
-      el.addEventListener("mouseenter", onEnterLink);
-      el.addEventListener("mouseleave", onLeaveLink);
-    });
 
     return () => {
       window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseover", onMouseOver);
+      window.removeEventListener("mouseout", onMouseOut);
       cancelAnimationFrame(rafRef.current);
-      links.forEach((el) => {
-        el.removeEventListener("mouseenter", onEnterLink);
-        el.removeEventListener("mouseleave", onLeaveLink);
-      });
     };
   }, []);
 

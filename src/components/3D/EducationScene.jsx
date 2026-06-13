@@ -29,7 +29,7 @@ function AirportsModel() {
     });
     return (
         <Float speed={1.0} floatIntensity={0.5}>
-            <primitive ref={ref} object={scene} scale={1.6} position={[0, 0, 0]} />
+            <primitive ref={ref} object={scene} scale={3.2} position={[0, 0, 0]} />
         </Float>
     );
 }
@@ -170,3 +170,5 @@ export default function EducationScene() {
         </div>
     );
 }
+
+useGLTF.preload("/airports_around_the_world.glb");

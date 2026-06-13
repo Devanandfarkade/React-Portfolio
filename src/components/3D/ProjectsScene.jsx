@@ -30,7 +30,7 @@ function BrainModel() {
     });
     return (
         <Float speed={1.0} floatIntensity={0.5}>
-            <primitive ref={ref} object={scene} scale={2.0} position={[0, 0, 0]} />
+            <primitive ref={ref} object={scene} scale={3.2} position={[0, 0, 0]} />
         </Float>
     );
 }
@@ -194,3 +194,5 @@ export default function ProjectsScene() {
         </div>
     );
 }
+
+useGLTF.preload("/brain_point_cloud.glb");

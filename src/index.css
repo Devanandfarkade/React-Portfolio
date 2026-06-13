@@ -58,7 +58,7 @@ body {
     pointer-events: none;
     z-index: 99999;
     box-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent);
-    transition: transform 0.05s ease;
+    will-change: transform;
   }
 
   .cursor-follower {
@@ -70,7 +70,8 @@ body {
     pointer-events: none;
     z-index: 99998;
     box-shadow: 0 0 8px rgba(0, 229, 255, 0.15);
-    transition: all 0.12s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: opacity 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, transform 0.08s cubic-bezier(0.25, 1, 0.5, 1);
+    will-change: transform;
   }
 }
 
@@ -98,6 +99,8 @@ body {
 .cyber-scrollbar {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
+  overscroll-behavior-y: contain;
+  overscroll-behavior-x: none;
 }
 
 /* Cyber Terminal Card Styling */
@@ -329,3 +332,9 @@ body {
     touch-action: pan-y pinch-zoom;
   }
 }
+
+/* Enforce native cursor visibility on inputs and textareas */
+input, textarea, select, input *, textarea *, select * {
+  cursor: auto !important;
+}
+

@@ -4,6 +4,7 @@ import { ExternalLink, Github, Database, Cpu, Terminal as TermIcon } from "lucid
 import SectionTitle from "./SectionTitle";
 import ProjectsScene from "./3D/ProjectsScene";
 import ViewportCanvas from "./ViewportCanvas";
+import { useScrollIndicator, ScrollIndicator } from "./ScrollIndicator";
 
 const filters = ["ALL", "JAVA", "DATABASE"];
 const projects = [
@@ -100,6 +101,9 @@ export default function Projects() {
         return p.cat === active;
       });
 
+  const scrollRef = useRef(null);
+  const showIndicator = useScrollIndicator(scrollRef);
+
   return (
     <section id="projects" className="relative lg:h-screen lg:max-h-screen lg:min-h-[600px] flex items-center py-12 lg:py-0 bg-bg overflow-hidden hacker-grid">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-green-950/2 blur-3xl pointer-events-none" />
@@ -112,8 +116,8 @@ export default function Projects() {
         <div className="grid lg:grid-cols-2 gap-10 items-stretch mt-3">
           
           {/* Projects Content Panel (Left Column) */}
-          <div className="cyber-card p-6 lg:p-8 rounded-3xl flex flex-col justify-between max-h-[58vh] lg:max-h-[62vh]">
-            <div className="flex-1 overflow-y-auto pr-3 cyber-scrollbar">
+          <div className="cyber-card p-6 lg:p-8 rounded-3xl flex flex-col justify-between max-h-[60vh] lg:max-h-[72vh] relative">
+            <div ref={scrollRef} className="flex-1 overflow-y-auto pr-3 cyber-scrollbar">
               {/* Category Filter buttons */}
               <div className="flex flex-wrap gap-2 mb-6">
                 {filters.map((f) => (
@@ -133,6 +137,8 @@ export default function Projects() {
                 </motion.div>
               </AnimatePresence>
             </div>
+
+            <ScrollIndicator visible={showIndicator} className="bottom-[90px]" />
 
             {/* View All Panel */}
             <div className="border-t border-accent-2/20 pt-5 mt-6 text-center">

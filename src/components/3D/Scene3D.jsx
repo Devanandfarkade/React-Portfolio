@@ -299,3 +299,6 @@ export default function Scene3D({ height = "100%" }) {
     </div>
   );
 }
+
+useGLTF.preload("/Austranaut.glb");
+

@@ -4,6 +4,7 @@ import { GraduationCap, Calendar, MapPin, Award } from "lucide-react";
 import SectionTitle from "./SectionTitle";
 import EducationScene from "./3D/EducationScene";
 import ViewportCanvas from "./ViewportCanvas";
+import { useScrollIndicator, ScrollIndicator } from "./ScrollIndicator";
 
 const education = [
   {
@@ -80,6 +81,9 @@ function EduCard({ edu, index }) {
 }
 
 export default function Education() {
+  const scrollRef = useRef(null);
+  const showIndicator = useScrollIndicator(scrollRef);
+
   return (
     <section id="education" className="relative lg:h-screen lg:max-h-screen lg:min-h-[600px] flex items-center py-12 lg:py-0 bg-bg overflow-hidden hacker-grid">
       <div className="absolute inset-0 bg-gradient-to-b from-bg via-transparent to-bg pointer-events-none" />
@@ -92,12 +96,14 @@ export default function Education() {
         <div className="grid lg:grid-cols-2 gap-10 items-stretch mt-3">
           
           {/* Content (Left Column) */}
-          <div className="cyber-card p-6 lg:p-8 rounded-3xl flex flex-col justify-between max-h-[58vh] lg:max-h-[62vh]">
-            <div className="flex-1 overflow-y-auto pr-3 cyber-scrollbar space-y-4">
+          <div className="cyber-card p-6 lg:p-8 rounded-3xl flex flex-col justify-between max-h-[60vh] lg:max-h-[72vh] relative">
+            <div ref={scrollRef} className="flex-1 overflow-y-auto pr-3 cyber-scrollbar space-y-4">
               {education.map((edu, i) => (
                 <EduCard key={edu.id} edu={edu} index={i} />
               ))}
             </div>
+
+            <ScrollIndicator visible={showIndicator} className="bottom-[70px]" />
             <div className="border-t border-accent-2/20 pt-4 mt-6 text-left font-mono-hacker text-[10px] text-accent-2/50">
               SYS_LOG: SECURE CERT_CHECKS: PASS.
             </div>

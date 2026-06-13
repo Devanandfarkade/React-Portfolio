@@ -4,6 +4,7 @@ import { Briefcase, Calendar, MapPin, ArrowRight, Server } from "lucide-react";
 import SectionTitle from "./SectionTitle";
 import ExperienceScene from "./3D/ExperienceScene";
 import ViewportCanvas from "./ViewportCanvas";
+import { useScrollIndicator, ScrollIndicator } from "./ScrollIndicator";
 
 const experiences = [
   {
@@ -104,6 +105,9 @@ function ExpTimelineCard({ exp, index }) {
 }
 
 export default function Experience() {
+  const scrollRef = useRef(null);
+  const showIndicator = useScrollIndicator(scrollRef);
+
   return (
     <section id="experience" className="relative lg:h-screen lg:max-h-screen lg:min-h-[600px] flex items-center py-12 lg:py-0 bg-surface/5 overflow-hidden hacker-grid">
       <div className="absolute inset-0 bg-gradient-to-b from-bg via-transparent to-bg pointer-events-none" />
@@ -123,12 +127,14 @@ export default function Experience() {
           </div>
 
           {/* Experience list (Right Column - matching height) */}
-          <div className="cyber-card p-6 lg:p-8 rounded-3xl flex flex-col justify-between max-h-[58vh] lg:max-h-[62vh]">
-            <div className="flex-1 overflow-y-auto pr-3 cyber-scrollbar space-y-3.5">
+          <div className="cyber-card p-6 lg:p-8 rounded-3xl flex flex-col justify-between max-h-[60vh] lg:max-h-[72vh] relative">
+            <div ref={scrollRef} className="flex-1 overflow-y-auto pr-3 cyber-scrollbar space-y-3.5">
               {experiences.map((exp, i) => (
                 <ExpTimelineCard key={exp.id} exp={exp} index={i} />
               ))}
             </div>
+
+            <ScrollIndicator visible={showIndicator} className="bottom-5" />
           </div>
           
         </div>

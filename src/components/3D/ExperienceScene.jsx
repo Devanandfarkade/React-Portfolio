@@ -139,3 +139,5 @@ export default function ExperienceScene() {
         </div>
     );
 }
+
+useGLTF.preload("/robot_character.glb");

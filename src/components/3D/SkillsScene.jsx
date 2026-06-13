@@ -168,3 +168,5 @@ export default function SkillsScene() {
         </div>
     );
 }
+
+useGLTF.preload("/cyberpunk_laptop.glb");
