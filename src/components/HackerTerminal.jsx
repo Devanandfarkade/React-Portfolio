@@ -16,11 +16,13 @@ export default function HackerTerminal() {
     status: "SECURE"
   });
 
-  const bottomRef = useRef(null);
+  const terminalHistoryRef = useRef(null);
   const inputRef = useRef(null);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (terminalHistoryRef.current) {
+      terminalHistoryRef.current.scrollTop = terminalHistoryRef.current.scrollHeight;
+    }
   }, [history]);
 
   useEffect(() => {
@@ -181,7 +183,7 @@ export default function HackerTerminal() {
       </div>
 
       {/* Terminal History Container */}
-      <div className="flex-1 p-6 overflow-y-auto space-y-2 z-10">
+      <div ref={terminalHistoryRef} className="flex-1 p-6 overflow-y-auto space-y-2 z-10 cyber-scrollbar">
         {history.map((line, idx) => {
           let style = "text-text-primary";
           if (line.type === "header") style = "text-accent font-bold text-sm tracking-wider";
@@ -200,7 +202,6 @@ export default function HackerTerminal() {
             </div>
           );
         })}
-        <div ref={bottomRef} />
       </div>
 
       {/* Console Input Row */}

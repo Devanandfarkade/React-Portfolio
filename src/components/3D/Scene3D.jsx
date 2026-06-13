@@ -2,15 +2,25 @@ import { useRef, useMemo, useState, useEffect } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import {
   OrbitControls,
-  Sphere,
-  MeshDistortMaterial,
   Float,
   Stars,
-  Trail,
   Environment,
   useGLTF,
 } from "@react-three/drei";
 import * as THREE from "three";
+
+function fixAstronautMaterials(scene) {
+  scene.traverse((child) => {
+    if (!child.isMesh) return;
+    const mats = Array.isArray(child.material) ? child.material : [child.material];
+    mats.forEach((m) => {
+      m.transparent = true;
+      m.opacity = 0.55; // Semi-transparent: little visible but not fully visible
+      m.depthWrite = true;
+      m.needsUpdate = true;
+    });
+  });
+}
 
 // Animated floating orb
 function AstronautModel() {
@@ -21,8 +31,12 @@ function AstronautModel() {
     setIsMobile(window.innerWidth < 768);
   }, []);
 
+  useEffect(() => {
+    fixAstronautMaterials(scene);
+  }, [scene]);
+
   return (
-    <Float speed={isMobile ? 1 : 2} floatIntensity={isMobile ? 0.8 : 1.5}>
+    <Float speed={isMobile ? 1 : 1.8} floatIntensity={isMobile ? 0.8 : 1.4}>
       <primitive
         object={scene}
         scale={isMobile ? 1.2 : 2}
@@ -74,7 +88,7 @@ function OrbitalRing({ radius, speed, tilt, color }) {
         <lineBasicMaterial
           color={color}
           transparent
-          opacity={isMobile ? 0.2 : 0.4}
+          opacity={isMobile ? 0.25 : 0.45}
         />
       </line>
     </group>
@@ -115,7 +129,7 @@ function Particles({ count = 80 }) {
       </bufferGeometry>
       <pointsMaterial
         size={isMobile ? 0.02 : 0.04}
-        color="#a855f7"
+        color="#39ff14"
         transparent
         opacity={isMobile ? 0.4 : 0.6}
         sizeAttenuation
@@ -144,7 +158,7 @@ function WireframeGeo() {
     <mesh ref={ref} scale={isMobile ? 1.5 : 2.5}>
       <icosahedronGeometry args={[1, 1]} />
       <meshBasicMaterial
-        color="#a855f7"
+        color="#39ff14"
         wireframe
         transparent
         opacity={isMobile ? 0.06 : 0.12}
@@ -165,7 +179,7 @@ function TouchRotationHandler() {
 
     const handleTouchRotate = (e) => {
       if (isDragging && isMobile) {
-        const { x, y } = e.detail;
+        const { x, y } = e.detail || e;
         setTargetRotation({ x: x * 0.5, y: y * 0.3 });
       }
     };
@@ -203,13 +217,6 @@ export default function Scene3D({ height = "100%" }) {
 
   useEffect(() => {
     setIsMobile(window.innerWidth < 768);
-
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   return (
@@ -228,22 +235,24 @@ export default function Scene3D({ height = "100%" }) {
         gl={{ alpha: true, antialias: true }}
         style={{ background: "transparent" }}
       >
-        <ambientLight intensity={isMobile ? 0.2 : 0.3} />
+        <ambientLight intensity={1.2} color="#ffffff" />
         <pointLight
           position={[10, 10, 10]}
-          intensity={isMobile ? 0.8 : 1.5}
-          color="#a855f7"
+          intensity={2.5}
+          color="#39ff14"
         />
         <pointLight
           position={[-10, -10, -10]}
-          intensity={isMobile ? 0.4 : 0.8}
-          color="#06b6d4"
+          intensity={1.8}
+          color="#00e5ff"
         />
         <pointLight
           position={[0, 10, -10]}
-          intensity={isMobile ? 0.3 : 0.5}
-          color="#f59e0b"
+          intensity={1.0}
+          color="#ffb700"
         />
+        <directionalLight position={[0, 0, 8]} intensity={1.5} color="#ffffff" />
+        <Environment preset="city" />
 
         <AstronautModel />
         <WireframeGeo />
@@ -251,19 +260,19 @@ export default function Scene3D({ height = "100%" }) {
           radius={isMobile ? 1.8 : 2.2}
           speed={isMobile ? 0.2 : 0.4}
           tilt={Math.PI / 4}
-          color="#a855f7"
+          color="#39ff14"
         />
         <OrbitalRing
           radius={isMobile ? 2.2 : 2.8}
           speed={isMobile ? -0.12 : -0.25}
           tilt={Math.PI / 6}
-          color="#06b6d4"
+          color="#00e5ff"
         />
         <OrbitalRing
           radius={isMobile ? 2.6 : 3.4}
           speed={isMobile ? 0.08 : 0.15}
           tilt={Math.PI / 3}
-          color="#f59e0b"
+          color="#ffb700"
         />
         <Particles count={isMobile ? 40 : 100} />
         <Stars

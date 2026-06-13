@@ -101,7 +101,7 @@ export default function Navbar() {
           {/* CTA + Mobile Toggle */}
           <div className="flex items-center gap-3">
             <motion.a
-              href="https://linkedin.com/in/devanandfarkade"
+              href="https://www.overleaf.com/project/69f4ccd2a77545648f1565de"
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ scale: 1.03 }}
@@ -109,7 +109,7 @@ export default function Navbar() {
               className="hidden sm:flex items-center gap-1.5 px-4 py-1.5 bg-accent/5 border border-accent/35 text-accent text-xs font-mono-hacker font-bold rounded hover:bg-accent hover:text-black transition-all duration-200"
             >
               <Download size={12} />
-              DISCV_SHELL
+              Resume
             </motion.a>
 
             <button
@@ -156,13 +156,13 @@ export default function Navbar() {
                 className="pt-2"
               >
                 <a
-                  href="https://linkedin.com/in/devanandfarkade"
+                  href="https://www.overleaf.com/project/69f4ccd2a77545648f1565de"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center gap-2 px-4 py-3 bg-accent text-black font-mono-hacker font-bold text-xs rounded"
                 >
                   <Download size={12} />
-                  CONNECT ON LINKEDIN
+                  DOWNLOAD RESUME
                 </a>
               </motion.li>
             </ul>

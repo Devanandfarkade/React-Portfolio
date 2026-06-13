@@ -140,7 +140,7 @@ export default function Hero() {
             className="font-syne font-bold text-5xl sm:text-6xl lg:text-7xl xl:text-8xl leading-[1.05] mb-4"
           >
             Hi, I'm{" "}
-            <span className="gradient-text-purple block mt-1">Devanand</span>
+            <span className="gradient-text-cyber block mt-1">Devanand</span>
           </motion.h1>
 
           {/* Typing role */}

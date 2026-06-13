@@ -29,7 +29,7 @@ function LaptopModel() {
     });
     return (
         <Float speed={1.3} floatIntensity={0.7}>
-            <primitive ref={ref} object={scene} scale={1.8} position={[0, -0.5, 0]} />
+            <primitive ref={ref} object={scene} scale={1.15} position={[0, -0.5, 0]} />
         </Float>
     );
 }
