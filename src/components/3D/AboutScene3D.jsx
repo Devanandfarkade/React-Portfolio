@@ -1,6 +1,5 @@
-// AboutScene3D.jsx
 import { useRef, useMemo, useState, useEffect } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, Environment, useGLTF, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 
@@ -74,7 +73,7 @@ function CircuitGrid() {
 
     return (
         <lineSegments ref={ref} geometry={geo}>
-            <lineBasicMaterial color="#06b6d4" transparent opacity={isMobile ? 0.08 : 0.15} />
+            <lineBasicMaterial color="#39ff14" transparent opacity={isMobile ? 0.08 : 0.15} />
         </lineSegments>
     );
 }
@@ -104,7 +103,8 @@ function BinaryParticles({ count = 60 }) {
     useFrame(() => {
         if (!posAttr.current) return;
         const arr = posAttr.current.array;
-        for (let i = 0; i < (isMobile ? count / 2 : count); i++) {
+        const limit = isMobile ? count / 2 : count;
+        for (let i = 0; i < limit; i++) {
             arr[i * 3 + 1] += 0.008;
             if (arr[i * 3 + 1] > 4) arr[i * 3 + 1] = -4;
         }
@@ -116,7 +116,7 @@ function BinaryParticles({ count = 60 }) {
             <bufferGeometry>
                 <bufferAttribute ref={posAttr} attach="attributes-position" args={[positions, 3]} />
             </bufferGeometry>
-            <pointsMaterial size={isMobile ? 0.03 : 0.055} color="#22d3ee" transparent opacity={isMobile ? 0.4 : 0.55} sizeAttenuation />
+            <pointsMaterial size={isMobile ? 0.03 : 0.055} color="#00e5ff" transparent opacity={isMobile ? 0.4 : 0.55} sizeAttenuation />
         </points>
     );
 }
@@ -155,69 +155,11 @@ function TechRing({ radius, y, speed, color }) {
     );
 }
 
-// Touch rotation handler (like hero section)
-function TouchRotationHandler() {
-    const { camera } = useThree();
-    const [targetRotation, setTargetRotation] = useState({ x: 0, y: 0 });
-    const [isDragging, setIsDragging] = useState(false);
-    const [isMobile, setIsMobile] = useState(false);
-
-    useEffect(() => {
-        setIsMobile(window.innerWidth < 768);
-
-        const handleMouseMove = (e) => {
-            if (!isMobile) {
-                const x = (e.clientX / window.innerWidth) * 2 - 1;
-                const y = (e.clientY / window.innerHeight) * 2 - 1;
-                setTargetRotation({ x: x * 0.5, y: y * 0.3 });
-            }
-        };
-
-        const handleTouchRotate = (e) => {
-            if (isDragging && isMobile) {
-                const { x, y } = e.detail || e;
-                setTargetRotation({ x: x * 0.5, y: y * 0.3 });
-            }
-        };
-
-        const handleTouchStart = () => setIsDragging(true);
-        const handleTouchEnd = () => {
-            setIsDragging(false);
-            setTargetRotation({ x: 0, y: 0 });
-        };
-
-        window.addEventListener("mousemove", handleMouseMove);
-        window.addEventListener("touch-rotate", handleTouchRotate);
-        window.addEventListener("touch-start", handleTouchStart);
-        window.addEventListener("touch-end", handleTouchEnd);
-
-        return () => {
-            window.removeEventListener("mousemove", handleMouseMove);
-            window.removeEventListener("touch-rotate", handleTouchRotate);
-            window.removeEventListener("touch-start", handleTouchStart);
-            window.removeEventListener("touch-end", handleTouchEnd);
-        };
-    }, [isDragging, isMobile]);
-
-    useFrame(() => {
-        if (camera) {
-            camera.position.x += (targetRotation.x - camera.position.x) * 0.05;
-            camera.position.y += (targetRotation.y - camera.position.y) * 0.05;
-            camera.lookAt(0, 0, 0);
-        }
-    });
-
-    return null;
-}
-
 export default function AboutScene3D({ height = "100%" }) {
     const [isMobile, setIsMobile] = useState(false);
 
     useEffect(() => {
         setIsMobile(window.innerWidth < 768);
-        const handleResize = () => setIsMobile(window.innerWidth < 768);
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
     }, []);
 
     return (
@@ -225,44 +167,38 @@ export default function AboutScene3D({ height = "100%" }) {
             style={{
                 width: "100%",
                 height,
-                position: "absolute",
-                inset: 0,
+                position: "relative",
                 zIndex: 1,
-                pointerEvents: isMobile ? "auto" : "none",
+                pointerEvents: "auto",
             }}
         >
             <Canvas
                 camera={{ position: [0, 0, isMobile ? 6 : 5.5], fov: isMobile ? 50 : 52 }}
                 gl={{ alpha: true, antialias: true }}
-                shadows
                 style={{ background: "transparent" }}
             >
-                <ambientLight intensity={isMobile ? 0.2 : 0.3} />
-                <pointLight position={[10, 10, 10]} intensity={isMobile ? 0.8 : 1.5} color="#a855f7" />
-                <pointLight position={[-10, -10, -10]} intensity={isMobile ? 0.4 : 0.8} color="#06b6d4" />
-                <pointLight position={[0, 10, -10]} intensity={isMobile ? 0.3 : 0.5} color="#f59e0b" />
-                <pointLight position={[3, 4, 3]} intensity={isMobile ? 0.5 : 1} color="#22d3ee" />
-                <pointLight position={[-3, -3, 3]} intensity={isMobile ? 0.4 : 0.8} color="#a855f7" />
+                <ambientLight intensity={1.8} color="#ffffff" />
+                <pointLight position={[10, 10, 10]} intensity={2.0} color="#39ff14" />
+                <pointLight position={[-10, -10, -10]} intensity={1.2} color="#00e5ff" />
+                <pointLight position={[0, 10, -10]} intensity={0.8} color="#ffb700" />
+                <pointLight position={[3, 4, 3]} intensity={1.5} color="#ff007f" />
                 <Environment preset="dawn" />
 
                 <AIRobotModel />
                 <CircuitGrid />
-                <BinaryParticles count={isMobile ? 30 : 50} />
-                <TechRing radius={isMobile ? 1.8 : 2.6} y={0} speed={0.5} color="#06b6d4" />
-                <TechRing radius={isMobile ? 2.2 : 3.2} y={0.5} speed={-0.3} color="#a855f7" />
-                <TechRing radius={isMobile ? 1.5 : 2} y={-0.5} speed={0.7} color="#22d3ee" />
-
-                {/* Mouse/Touch interaction for 3D scene like hero */}
-                <TouchRotationHandler />
+                <BinaryParticles count={isMobile ? 25 : 45} />
+                <TechRing radius={isMobile ? 1.8 : 2.6} y={0} speed={0.5} color="#00e5ff" />
+                <TechRing radius={isMobile ? 2.2 : 3.2} y={0.5} speed={-0.3} color="#39ff14" />
+                <TechRing radius={isMobile ? 1.5 : 2} y={-0.5} speed={0.7} color="#ff007f" />
 
                 <OrbitControls
                     enableZoom={false}
                     enablePan={false}
-                    autoRotate={!isMobile}
+                    autoRotate={true}
                     autoRotateSpeed={0.8}
                     maxPolarAngle={Math.PI / 1.8}
                     minPolarAngle={Math.PI / 3.5}
-                    enableRotate={false}
+                    enableRotate={true}
                 />
             </Canvas>
         </div>

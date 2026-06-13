@@ -8,7 +8,7 @@ import {
   Send,
   Github,
   Linkedin,
-  Twitter,
+  ShieldAlert,
   CheckCircle,
   Loader,
 } from "lucide-react";
@@ -17,24 +17,24 @@ import SectionTitle from "./SectionTitle";
 const contactInfo = [
   {
     icon: Mail,
-    label: "Email",
+    label: "EMAIL_NODE",
     value: "devaapatil330@gmail.com",
     href: "mailto:devaapatil330@gmail.com",
-    color: "#a855f7",
+    color: "#00e5ff",
   },
   {
     icon: Phone,
-    label: "Phone",
+    label: "COMMS_LINE",
     value: "+91 9518331190",
     href: "tel:+919518331190",
-    color: "#06b6d4",
+    color: "#39ff14",
   },
   {
     icon: MapPin,
-    label: "Location",
+    label: "PHYSICAL_COORDS",
     value: "Pune, Maharashtra, India",
     href: null,
-    color: "#f59e0b",
+    color: "#ffb700",
   },
 ];
 
@@ -51,12 +51,6 @@ const socials = [
     href: "https://linkedin.com/in/devanandfarkade",
     color: "#0077b5",
   },
-  {
-    icon: Twitter,
-    label: "Twitter",
-    href: "https://twitter.com/",
-    color: "#1da1f2",
-  },
 ];
 
 function InputField({
@@ -70,8 +64,8 @@ function InputField({
 }) {
   return (
     <div>
-      <label className="block font-dm text-sm font-medium text-text-secondary mb-2">
-        {label}
+      <label className="block font-mono-hacker text-xs font-semibold text-accent-2 mb-2 tracking-wider">
+        &gt; {label}
       </label>
       {textarea ? (
         <textarea
@@ -80,7 +74,7 @@ function InputField({
           onChange={onChange}
           rows={5}
           placeholder={placeholder}
-          className="w-full px-4 py-3.5 rounded-xl bg-surface border border-purple-900/40 text-text-primary placeholder:text-muted font-dm text-sm focus:outline-none focus:border-accent/70 focus:bg-surface-2 transition-all duration-300 resize-none"
+          className="w-full px-4 py-3.5 rounded-xl bg-black border border-accent-2/30 text-text-primary placeholder:text-muted/50 font-mono-hacker text-sm focus:outline-none focus:border-accent/70 focus:bg-surface transition-all duration-300 resize-none"
         />
       ) : (
         <input
@@ -89,7 +83,7 @@ function InputField({
           value={value}
           onChange={onChange}
           placeholder={placeholder}
-          className="w-full px-4 py-3.5 rounded-xl bg-surface border border-purple-900/40 text-text-primary placeholder:text-muted font-dm text-sm focus:outline-none focus:border-accent/70 focus:bg-surface-2 transition-all duration-300"
+          className="w-full px-4 py-3.5 rounded-xl bg-black border border-accent-2/30 text-text-primary placeholder:text-muted/50 font-mono-hacker text-sm focus:outline-none focus:border-accent/70 focus:bg-surface transition-all duration-300"
         />
       )}
     </div>
@@ -115,51 +109,52 @@ export default function Contact() {
     if (!form.name || !form.email || !form.message) return;
     setStatus("loading");
 
-    // Simulate send (replace with EmailJS integration)
-
-    await emailjs.send(
-      "service_9mhpnzo",
-      "template_cu3c3is",
-      form,
-      "E8kFEbVpsCQ2eZXD0",
-    );
-    setTimeout(() => {
+    try {
+      await emailjs.send(
+        "service_9mhpnzo",
+        "template_cu3c3is",
+        form,
+        "E8kFEbVpsCQ2eZXD0"
+      );
       setStatus("success");
       setForm({ name: "", email: "", subject: "", message: "" });
       setTimeout(() => setStatus("idle"), 4000);
-    }, 1800);
+    } catch (error) {
+      console.error(error);
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 4000);
+    }
   };
 
   return (
-    <section id="contact" className="relative py-5 bg-bg overflow-hidden">
+    <section id="contact" className="relative py-24 bg-bg overflow-hidden hacker-grid">
       {/* Decorative glow */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full bg-purple-600/5 blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full bg-green-950/2 blur-3xl pointer-events-none" />
 
       <div className="relative max-w-7xl mx-auto px-6 lg:px-12">
         <SectionTitle
-          tag="Get in Touch"
-          title="Let's Work"
-          highlight="Together"
-          subtitle="Have a project in mind? I'd love to help. Send me a message and let's talk."
+          tag="SECURE_TRANSMISSION"
+          title="COMMS_PANEL:"
+          highlight="CONTACT"
+          subtitle="Establish encrypted link protocol for professional communications..."
         />
 
-        <div className="grid lg:grid-cols-5 gap-10">
+        <div className="grid lg:grid-cols-5 gap-12 mt-12">
           {/* Left Info Panel */}
           <motion.div
-            initial={{ opacity: 0, x: -40 }}
+            initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.5 }}
             className="lg:col-span-2 space-y-6"
           >
-            <div>
-              <h3 className="font-syne font-bold text-2xl text-text-primary mb-3">
-                Open to opportunities
+            <div className="cyber-card p-6 rounded-2xl">
+              <h3 className="font-mono-hacker font-bold text-lg text-text-primary mb-3.5 tracking-wider">
+                &gt; CONNECTION STATE
               </h3>
-              <p className="font-dm text-text-secondary leading-relaxed">
-                I'm currently available for freelance projects, full-time roles,
-                and exciting collaborations. Reach out and let's create
-                something amazing together.
+              <p className="font-dm text-sm text-text-secondary leading-relaxed">
+                Currently open for software engineering roles, full-stack consulting, 
+                and core development assignments. Initiate handshake protocols by transmitting details below.
               </p>
             </div>
 
@@ -168,27 +163,27 @@ export default function Contact() {
               {contactInfo.map(({ icon: Icon, label, value, href, color }) => (
                 <div
                   key={label}
-                  className="group flex items-center gap-4 p-4 rounded-2xl bg-surface glow-border hover:bg-surface/80 transition-all duration-300"
+                  className="group flex items-center gap-4 p-4 rounded-xl bg-surface/50 border border-accent-2/15 hover:border-accent/40 hover:bg-surface-2/40 transition-all duration-300"
                 >
                   <div
-                    className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                    style={{ backgroundColor: color + "20" }}
+                    className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
+                    style={{ backgroundColor: color + "10" }}
                   >
-                    <Icon size={18} style={{ color }} />
+                    <Icon size={16} style={{ color }} />
                   </div>
                   <div>
-                    <div className="font-dm text-xs text-muted mb-0.5">
+                    <div className="font-mono-hacker text-[10px] text-accent-2 mb-0.5 tracking-widest">
                       {label}
                     </div>
                     {href ? (
                       <a
                         href={href}
-                        className="font-dm text-sm text-text-primary hover:text-accent transition-colors"
+                        className="font-mono-hacker text-sm text-text-primary hover:text-accent transition-colors"
                       >
                         {value}
                       </a>
                     ) : (
-                      <span className="font-dm text-sm text-text-primary">
+                      <span className="font-mono-hacker text-sm text-text-primary">
                         {value}
                       </span>
                     )}
@@ -198,38 +193,38 @@ export default function Contact() {
             </div>
 
             {/* Social icons */}
-            <div>
-              <div className="font-dm text-xs text-muted uppercase tracking-widest mb-4">
-                Connect with me
+            <div className="cyber-card p-6 rounded-2xl space-y-3">
+              <div className="font-mono-hacker text-[10px] text-accent-2 uppercase tracking-widest">
+                &gt; REMOTE_SOCIAL_NODES
               </div>
               <div className="flex gap-3">
-                {socials.map(({ icon: Icon, label, href, color }) => (
+                {socials.map(({ icon: Icon, label, href }) => (
                   <motion.a
                     key={label}
                     href={href}
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={label}
-                    whileHover={{ scale: 1.1, y: -3 }}
+                    whileHover={{ scale: 1.05, y: -2 }}
                     whileTap={{ scale: 0.95 }}
-                    className="w-11 h-11 flex items-center justify-center rounded-xl bg-surface border border-purple-900/40 hover:border-accent/50 text-text-secondary hover:text-accent transition-all duration-300"
+                    className="w-10 h-10 flex items-center justify-center rounded-lg bg-surface border border-accent-2/20 hover:border-accent text-text-secondary hover:text-accent transition-all duration-300"
                   >
-                    <Icon size={18} />
+                    <Icon size={16} />
                   </motion.a>
                 ))}
               </div>
             </div>
 
             {/* Availability badge */}
-            <div className="p-4 rounded-2xl bg-green-500/5 border border-green-500/20">
+            <div className="p-4 rounded-2xl bg-accent/5 border border-accent/20">
               <div className="flex items-center gap-2 mb-1">
-                <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-                <span className="font-syne font-semibold text-green-400 text-sm">
-                  Available for Work
+                <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+                <span className="font-mono-hacker font-bold text-accent text-xs tracking-wider">
+                  SYSTEM READY: ACCEPTING CONNECTIONS
                 </span>
               </div>
-              <p className="font-dm text-xs text-text-secondary">
-                Usually responds within 24 hours.
+              <p className="font-dm text-xs text-text-secondary pl-4">
+                Latency: ~24 hours. Safe connection verified.
               </p>
             </div>
           </motion.div>
@@ -237,56 +232,70 @@ export default function Contact() {
           {/* Right Form */}
           <motion.div
             ref={formRef}
-            initial={{ opacity: 0, x: 40 }}
+            initial={{ opacity: 0, x: 30 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.1 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
             className="lg:col-span-3"
           >
-            <div className="p-8 rounded-3xl bg-surface glow-border">
+            <div className="p-8 rounded-3xl cyber-card">
               {status === "success" ? (
                 <motion.div
-                  initial={{ scale: 0.8, opacity: 0 }}
+                  initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   className="flex flex-col items-center justify-center py-12 text-center"
                 >
-                  <CheckCircle size={56} className="text-green-400 mb-4" />
-                  <h3 className="font-syne font-bold text-2xl text-text-primary mb-2">
-                    Message Sent!
+                  <CheckCircle size={48} className="text-accent mb-4" />
+                  <h3 className="font-mono-hacker font-bold text-xl text-text-primary mb-2 tracking-wider">
+                    TRANSMISSION COMPLETE
                   </h3>
-                  <p className="font-dm text-text-secondary">
-                    Thanks for reaching out. I'll get back to you shortly.
+                  <p className="font-dm text-sm text-text-secondary">
+                    Your message packet was routed successfully. Handshake queued.
+                  </p>
+                </motion.div>
+              ) : status === "error" ? (
+                <motion.div
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  className="flex flex-col items-center justify-center py-12 text-center"
+                >
+                  <ShieldAlert size={48} className="text-red-500 mb-4" />
+                  <h3 className="font-mono-hacker font-bold text-xl text-red-500 mb-2 tracking-wider">
+                    TRANSMISSION FAILED
+                  </h3>
+                  <p className="font-dm text-sm text-text-secondary">
+                    An error occurred routing the packet. Please try again or email directly.
                   </p>
                 </motion.div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-5">
                   <div className="grid sm:grid-cols-2 gap-5">
                     <InputField
-                      label="Your Name"
+                      label="SENDER_NAME"
                       name="name"
-                      placeholder="John Doe"
+                      placeholder="Ident Name"
                       value={form.name}
                       onChange={handleChange}
                     />
                     <InputField
-                      label="Email Address"
+                      label="SENDER_EMAIL"
                       name="email"
                       type="email"
-                      placeholder="john@example.com"
+                      placeholder="address@domain.com"
                       value={form.email}
                       onChange={handleChange}
                     />
                   </div>
                   <InputField
-                    label="Subject"
+                    label="ROUTE_SUBJECT"
                     name="subject"
-                    placeholder="Project idea, job offer..."
+                    placeholder="Brief description header"
                     value={form.subject}
                     onChange={handleChange}
                   />
                   <InputField
-                    label="Message"
+                    label="DATA_PAYLOAD"
                     name="message"
-                    placeholder="Tell me about your project..."
+                    placeholder="Enter message details here..."
                     value={form.message}
                     onChange={handleChange}
                     textarea
@@ -295,32 +304,22 @@ export default function Contact() {
                   <motion.button
                     type="submit"
                     disabled={status === "loading"}
-                    whileHover={{ scale: 1.02, y: -1 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="w-full flex items-center justify-center gap-3 px-8 py-4 bg-accent text-white font-dm font-semibold rounded-xl hover:bg-purple-600 hover:shadow-lg hover:shadow-purple-500/30 disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-300"
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.99 }}
+                    className="w-full flex items-center justify-center gap-3 px-8 py-4 btn-hacker font-bold rounded-xl disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-300"
                   >
                     {status === "loading" ? (
                       <>
-                        <Loader size={18} className="animate-spin" />
-                        Sending...
+                        <Loader size={16} className="animate-spin" />
+                        TRANSMITTING_PACKETS...
                       </>
                     ) : (
                       <>
-                        <Send size={18} />
-                        Send Message
+                        <Send size={16} />
+                        TRANSMIT_MESSAGE
                       </>
                     )}
                   </motion.button>
-
-                  <p className="font-dm text-xs text-center text-muted">
-                    Or email me directly at{" "}
-                    <a
-                      href="mailto:devaapatil330@gmail.com"
-                      className="text-accent hover:underline"
-                    >
-                      devaapatil330@gmail.com
-                    </a>
-                  </p>
                 </form>
               )}
             </div>

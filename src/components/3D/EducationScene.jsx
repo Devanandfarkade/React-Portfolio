@@ -2,7 +2,6 @@ import { useRef, useMemo, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, Environment, useGLTF, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 
 function fixMaterials(scene) {
     scene.traverse((child) => {
@@ -68,7 +67,7 @@ function GlobeGrid({ radius = 2.5 }) {
     });
     return (
         <points ref={ref} geometry={geo}>
-            <pointsMaterial size={0.025} color="#06b6d4" transparent opacity={0.35} sizeAttenuation />
+            <pointsMaterial size={0.025} color="#00e5ff" transparent opacity={0.35} sizeAttenuation />
         </points>
     );
 }
@@ -140,40 +139,34 @@ function LocationDot({ pos, i }) {
     return (
         <mesh ref={ref} position={pos}>
             <sphereGeometry args={[0.07, 8, 8]} />
-            <meshBasicMaterial color="#f59e0b" transparent opacity={0.6} />
+            <meshBasicMaterial color="#39ff14" transparent opacity={0.6} />
         </mesh>
     );
 }
 
 export default function EducationScene() {
-    const ref = useRef(null);
-    const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-    const rawY = useTransform(scrollYProgress, [0, 0.35, 0.65, 1], [60, 0, 0, -40]);
-    const rawOpacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
-    const y = useSpring(rawY, { stiffness: 65, damping: 22 });
-
     return (
-        <motion.div ref={ref} style={{ y, opacity: rawOpacity }} className="w-full h-full">
+        <div style={{ width: "100%", height: "100%", position: "relative", zIndex: 1, pointerEvents: "auto" }}>
             <Canvas camera={{ position: [0, 0, 6], fov: 52 }}
                 gl={{ alpha: true, antialias: true }} shadows style={{ background: "transparent" }}>
-                <ambientLight intensity={2.5} color="#ffffff" />
-                <directionalLight position={[5, 8, 5]} intensity={3} color="#ffffff" castShadow />
-                <directionalLight position={[-4, 2, -4]} intensity={2} color="#34d399" />
-                <pointLight position={[3, 4, 3]} intensity={4.5} color="#10b981" />
-                <pointLight position={[-3, -3, 3]} intensity={3} color="#06b6d4" />
-                <pointLight position={[0, 6, 0]} intensity={2.5} color="#6ee7b7" />
+                <ambientLight intensity={1.8} color="#ffffff" />
+                <directionalLight position={[5, 8, 5]} intensity={2.5} color="#ffffff" castShadow />
+                <directionalLight position={[-4, 2, -4]} intensity={2.0} color="#00e5ff" />
+                <pointLight position={[3, 4, 3]} intensity={3.0} color="#39ff14" />
+                <pointLight position={[-3, -3, 3]} intensity={2.5} color="#ff007f" />
+                <pointLight position={[0, 6, 0]} intensity={2.0} color="#39ff14" />
                 <Environment preset="park" />
 
                 <AirportsModel />
                 <GlobeGrid radius={2.6} />
                 <LocationDots />
-                <FlightArc from={[2.1, 0.8, 1.3]} to={[-1.8, 1.5, -1.5]} color="#f59e0b" speed={2} />
-                <FlightArc from={[-2.0, 1.0, 1.0]} to={[1.5, -1.2, 2.0]} color="#10b981" speed={1.5} />
-                <FlightArc from={[0.5, 2.5, 0.5]} to={[-1.0, -2.0, -1.8]} color="#06b6d4" speed={2.5} />
+                <FlightArc from={[2.1, 0.8, 1.3]} to={[-1.8, 1.5, -1.5]} color="#ff007f" speed={2} />
+                <FlightArc from={[-2.0, 1.0, 1.0]} to={[1.5, -1.2, 2.0]} color="#39ff14" speed={1.5} />
+                <FlightArc from={[0.5, 2.5, 0.5]} to={[-1.0, -2.0, -1.8]} color="#00e5ff" speed={2.5} />
 
                 <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.7}
-                    maxPolarAngle={Math.PI / 1.8} minPolarAngle={Math.PI / 3} enableRotate={false} />
+                    maxPolarAngle={Math.PI / 1.8} minPolarAngle={Math.PI / 3} enableRotate={true} />
             </Canvas>
-        </motion.div>
+        </div>
     );
 }

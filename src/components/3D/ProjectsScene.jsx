@@ -2,7 +2,6 @@ import { useRef, useMemo, useState, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, Environment, useGLTF, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 
 function fixMaterials(scene) {
     scene.traverse((child) => {
@@ -104,14 +103,13 @@ function SynapseWeb({ nodeCount = 18 }) {
                 <bufferAttribute ref={posAttr} attach="attributes-position"
                     args={[new Float32Array(nodeCount * nodeCount * 6), 3]} />
             </bufferGeometry>
-            <lineBasicMaterial color="#f0abfc" transparent opacity={0.22} />
+            <lineBasicMaterial color="#00e5ff" transparent opacity={0.25} />
         </lineSegments>
     );
 }
 
 // Pulsing neuron orbs
 function NeuronOrbs({ count = 14 }) {
-    const refs = useRef([]);
     const orbs = useMemo(() => Array.from({ length: count }, (_, i) => ({
         x: (Math.random() - 0.5) * 7,
         y: (Math.random() - 0.5) * 5,
@@ -140,7 +138,7 @@ function NeuronOrb({ orb }) {
     return (
         <mesh ref={ref} position={[orb.x, orb.y, orb.z]}>
             <sphereGeometry args={[orb.size, 8, 8]} />
-            <meshBasicMaterial color="#e879f9" transparent opacity={0.5} />
+            <meshBasicMaterial color="#39ff14" transparent opacity={0.5} />
         </mesh>
     );
 }
@@ -165,40 +163,34 @@ function ThoughtWave({ radius, speed, color }) {
     });
     return (
         <line ref={ref} geometry={geo}>
-            <lineBasicMaterial color={color} transparent opacity={0.22} />
+            <lineBasicMaterial color={color} transparent opacity={0.25} />
         </line>
     );
 }
 
 export default function ProjectsScene() {
-    const ref = useRef(null);
-    const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-    const rawX = useTransform(scrollYProgress, [0, 0.35, 0.65, 1], [-80, 0, 0, 60]);
-    const rawOpacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
-    const x = useSpring(rawX, { stiffness: 65, damping: 22 });
-
     return (
-        <motion.div ref={ref} style={{ x, opacity: rawOpacity }} className="w-full h-full">
+        <div style={{ width: "100%", height: "100%", position: "relative", zIndex: 1, pointerEvents: "auto" }}>
             <Canvas camera={{ position: [0, 0, 5.5], fov: 55 }}
                 gl={{ alpha: true, antialias: true }} shadows style={{ background: "transparent" }}>
-                <ambientLight intensity={2.5} color="#ffffff" />
-                <directionalLight position={[5, 8, 5]} intensity={3} color="#ffffff" castShadow />
-                <directionalLight position={[-4, 2, -4]} intensity={2} color="#e879f9" />
-                <pointLight position={[3, 4, 3]} intensity={5} color="#c026d3" />
-                <pointLight position={[-3, -3, 3]} intensity={3} color="#a855f7" />
-                <pointLight position={[0, 6, 0]} intensity={2.5} color="#f0abfc" />
+                <ambientLight intensity={1.8} color="#ffffff" />
+                <directionalLight position={[5, 8, 5]} intensity={2.5} color="#ffffff" castShadow />
+                <directionalLight position={[-4, 2, -4]} intensity={2.0} color="#ff007f" />
+                <pointLight position={[3, 4, 3]} intensity={3.0} color="#39ff14" />
+                <pointLight position={[-3, -3, 3]} intensity={2.5} color="#00e5ff" />
+                <pointLight position={[0, 6, 0]} intensity={2.0} color="#39ff14" />
                 <Environment preset="warehouse" />
 
                 <BrainModel />
-                <SynapseWeb nodeCount={16} />
-                <NeuronOrbs count={12} />
-                <ThoughtWave radius={3.2} speed={0.2} color="#e879f9" />
-                <ThoughtWave radius={4.0} speed={-0.15} color="#a855f7" />
-                <ThoughtWave radius={4.8} speed={0.1} color="#c084fc" />
+                <SynapseWeb nodeCount={14} />
+                <NeuronOrbs count={10} />
+                <ThoughtWave radius={3.2} speed={0.2} color="#00e5ff" />
+                <ThoughtWave radius={4.0} speed={-0.15} color="#39ff14" />
+                <ThoughtWave radius={4.8} speed={0.1} color="#ff007f" />
 
                 <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.8}
-                    maxPolarAngle={Math.PI / 1.8} minPolarAngle={Math.PI / 3.5} enableRotate={false} />
+                    maxPolarAngle={Math.PI / 1.8} minPolarAngle={Math.PI / 3.5} enableRotate={true} />
             </Canvas>
-        </motion.div>
+        </div>
     );
 }

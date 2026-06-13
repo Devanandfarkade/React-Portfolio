@@ -1,101 +1,156 @@
-import { useState, useRef, Suspense } from "react";
+import { useState, useRef } from "react";
 import { motion, AnimatePresence, useInView } from "framer-motion";
-import { ExternalLink, Github, Star, Eye } from "lucide-react";
+import { ExternalLink, Github, Database, Cpu, Terminal as TermIcon } from "lucide-react";
 import SectionTitle from "./SectionTitle";
 import ProjectsScene from "./3D/ProjectsScene";
+import ViewportCanvas from "./ViewportCanvas";
 
-const filters = ["All", "Full Stack", "Frontend", "Backend"];
+const filters = ["ALL", "JAVA", "DATABASE"];
 const projects = [
-  { id: 1, title: "ShopMERN", desc: "Full-featured e-commerce platform with cart, payment integration, admin dashboard, and order tracking. Built with MERN stack and Stripe.", tags: ["React", "Node.js", "MongoDB", "Stripe", "Redux"], cat: "Full Stack", stars: 42, views: 1200, live: "https://example.com", repo: "https://github.com", color: "#a855f7", featured: true },
-  { id: 2, title: "DevConnect", desc: "Social network for developers — profiles, posts, GitHub integration, and real-time chat using Socket.io.", tags: ["React", "Express", "MongoDB", "Socket.io", "JWT"], cat: "Full Stack", stars: 38, views: 890, live: "https://example.com", repo: "https://github.com", color: "#06b6d4", featured: true },
-  { id: 3, title: "PortfolioGen", desc: "AI-powered portfolio generator that builds a beautiful site from a form. React frontend + OpenAI API.", tags: ["React", "Tailwind", "OpenAI", "Vite"], cat: "Frontend", stars: 21, views: 450, live: "https://example.com", repo: "https://github.com", color: "#f59e0b", featured: false },
-  { id: 4, title: "Task API", desc: "RESTful task management API with authentication, role-based access, rate limiting, and full test coverage.", tags: ["Node.js", "Express", "MongoDB", "Jest"], cat: "Backend", stars: 15, views: 320, live: null, repo: "https://github.com", color: "#10b981", featured: false },
-  { id: 5, title: "Finance Tracker", desc: "Personal finance tracker with charts, budgets, and category analysis. Charts built with Recharts.", tags: ["React", "Node.js", "Chart.js", "Tailwind"], cat: "Full Stack", stars: 29, views: 680, live: "https://example.com", repo: "https://github.com", color: "#8b5cf6", featured: false },
-  { id: 6, title: "UI Component Kit", desc: "Open-source React component library with 50+ accessible, animated components and full Storybook docs.", tags: ["React", "TypeScript", "Framer Motion", "Storybook"], cat: "Frontend", stars: 57, views: 2100, live: "https://example.com", repo: "https://github.com", color: "#ec4899", featured: false },
+  { 
+    id: 1, 
+    title: "BANK MANAGEMENT SYSTEM", 
+    desc: "A comprehensive financial transaction ledger built to manage core banking operations. Implements user authentication, automated ledger entries, checking deposits, withdrawals, and accurate calculations of ATM and debit card fee schedules.", 
+    tags: ["Java", "MySQL", "JDBC", "Database Design", "Git"], 
+    cat: "JAVA", 
+    repo: "https://github.com/Devanandfarkade", 
+    live: null,
+    color: "#39ff14", 
+    featured: true 
+  },
+  { 
+    id: 2, 
+    title: "VEHICLE SERVICE CENTER", 
+    desc: "An automated billing, scheduling, and invoicing node developed from scratch. Processes diagnostic logs, tracks inventory parts consumed, aggregates labor rates, and computes customer invoices with detailed line-item cost summaries.", 
+    tags: ["Java", "Spring Boot", "MySQL", "Spring Tool Suite 4", "REST APIs"], 
+    cat: "JAVA", 
+    repo: "https://github.com/Devanandfarkade", 
+    live: null,
+    color: "#00e5ff", 
+    featured: true 
+  },
 ];
 
 function ProjectCard({ project, index }) {
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
+  const inView = useInView(ref, { once: true, margin: "-40px" });
   return (
-    <motion.div ref={ref} initial={{ opacity: 0, y: 40 }} animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
-      className="group relative rounded-3xl bg-surface glow-border overflow-hidden hover:shadow-2xl hover:shadow-purple-900/20 transition-all duration-500 hover:-translate-y-1 flex flex-col">
-      <div className="h-1 w-full opacity-80" style={{ background: `linear-gradient(90deg, ${project.color}, ${project.color}44)` }} />
-      <div className="p-6 pb-4 flex items-start justify-between">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            {project.featured && <span className="text-xs font-dm font-medium px-2 py-0.5 rounded-full bg-yellow-500/15 text-yellow-400 border border-yellow-500/30">Featured</span>}
-            <span className="text-xs font-dm text-muted">{project.cat}</span>
+    <motion.div ref={ref} initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
+      className="group relative rounded-2xl bg-surface/50 border border-accent-2/15 p-6 flex flex-col justify-between hover:bg-surface-2/40 hover:border-accent/40 transition-all duration-300">
+      
+      <div>
+        <div className="flex items-center justify-between mb-3 border-b border-accent-2/10 pb-2.5">
+          <span className="flex items-center gap-1 text-[10px] font-mono-hacker text-accent-2">
+            <Cpu size={10} /> {project.cat}
+          </span>
+          <div className="flex gap-2">
+            {project.repo && (
+              <a href={project.repo} target="_blank" rel="noopener noreferrer" className="w-7 h-7 flex items-center justify-center rounded bg-surface border border-accent-2/20 hover:border-accent hover:text-accent text-text-secondary transition-all">
+                <Github size={12} />
+              </a>
+            )}
+            {project.live && (
+              <a href={project.live} target="_blank" rel="noopener noreferrer" className="w-7 h-7 flex items-center justify-center rounded bg-surface border border-accent-2/20 hover:border-accent hover:text-accent text-text-secondary transition-all">
+                <ExternalLink size={12} />
+              </a>
+            )}
           </div>
-          <h3 className="font-syne font-bold text-xl text-text-primary group-hover:text-accent transition-colors duration-300">{project.title}</h3>
         </div>
-        <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          {project.repo && <a href={project.repo} target="_blank" rel="noopener noreferrer" className="w-8 h-8 flex items-center justify-center rounded-lg bg-surface-2 hover:bg-accent/20 text-text-secondary hover:text-accent transition-all"><Github size={14} /></a>}
-          {project.live && <a href={project.live} target="_blank" rel="noopener noreferrer" className="w-8 h-8 flex items-center justify-center rounded-lg bg-surface-2 hover:bg-accent/20 text-text-secondary hover:text-accent transition-all"><ExternalLink size={14} /></a>}
+
+        <h3 className="font-mono-hacker text-base font-bold text-text-primary group-hover:text-accent transition-colors duration-300 tracking-wider">
+          {project.title}
+        </h3>
+        <p className="font-dm text-sm text-text-secondary leading-relaxed mt-2.5">
+          {project.desc}
+        </p>
+      </div>
+
+      <div className="mt-5 space-y-3">
+        <div className="flex flex-wrap gap-1.5">
+          {project.tags.map((tag) => (
+            <span key={tag} className="text-[10px] font-mono-hacker px-2 py-0.5 rounded bg-surface border border-accent-2/10 text-text-secondary">
+              {tag}
+            </span>
+          ))}
+        </div>
+        
+        <div className="border-t border-accent-2/10 pt-3 flex items-center justify-between text-[11px] font-mono-hacker">
+          <span className="text-accent/60 flex items-center gap-1">
+            <Database size={10} /> STATUS: STABLE
+          </span>
+          <span className="text-accent-2 flex items-center gap-0.5">
+            LOGS <TermIcon size={10} />
+          </span>
         </div>
       </div>
-      <p className="px-6 font-dm text-sm text-text-secondary leading-relaxed flex-1">{project.desc}</p>
-      <div className="px-6 pt-4 flex flex-wrap gap-2">
-        {project.tags.map((tag) => <span key={tag} className="text-xs font-dm px-2.5 py-1 rounded-lg bg-surface-2 text-text-secondary border border-purple-900/30">{tag}</span>)}
-      </div>
-      <div className="px-6 py-4 mt-4 border-t border-purple-900/20 flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <span className="flex items-center gap-1.5 text-xs font-dm text-muted"><Star size={12} className="text-yellow-400" />{project.stars}</span>
-          <span className="flex items-center gap-1.5 text-xs font-dm text-muted"><Eye size={12} className="text-cyan-400" />{project.views}</span>
-        </div>
-        <a href={project.live || project.repo} target="_blank" rel="noopener noreferrer" className="text-xs font-dm font-medium text-accent hover:underline flex items-center gap-1">View <ExternalLink size={10} /></a>
-      </div>
+      
     </motion.div>
   );
 }
 
 export default function Projects() {
-  const [active, setActive] = useState("All");
-  const filtered = active === "All" ? projects : projects.filter((p) => p.cat === active);
+  const [active, setActive] = useState("ALL");
+  
+  // Custom filter logic
+  const filtered = active === "ALL" 
+    ? projects 
+    : projects.filter((p) => {
+        if (active === "DATABASE") return p.tags.includes("MySQL") || p.tags.includes("Database Design");
+        return p.cat === active;
+      });
 
   return (
-    <section id="projects" className="relative py-24 bg-bg overflow-hidden">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-purple-900/4 blur-3xl pointer-events-none" />
+    <section id="projects" className="relative py-24 bg-bg overflow-hidden hacker-grid">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-green-950/2 blur-3xl pointer-events-none" />
 
       <div className="relative max-w-7xl mx-auto px-6 lg:px-12">
-        <SectionTitle tag="My Work" title="Featured" highlight="Projects"
-          subtitle="A selection of real-world projects that showcase my skills and passion." />
+        <SectionTitle tag="SYSTEM_MODULES" title="PROJECT_REGISTRY:" highlight="WORK_HISTORY"
+          subtitle="Loading source code indices and database schematics for review..." />
 
-        {/* Brain 3D banner */}
-        <div className="relative h-[300px] lg:h-[380px] rounded-3xl overflow-hidden bg-surface/20 glow-border mb-12">
-          <Suspense fallback={null}>
-            <ProjectsScene />
-          </Suspense>
-          <div className="absolute inset-0 bg-gradient-to-r from-bg/80 via-transparent to-bg/80 pointer-events-none" />
-          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-            <p className="font-syne font-bold text-3xl lg:text-4xl text-text-primary text-center">Think. Build. Ship.</p>
-            <p className="font-dm text-text-secondary mt-2 text-sm">Every project tells a story of problem-solving</p>
+        {/* Side-by-side equal-height layout: Content Left, 3D Right */}
+        <div className="grid lg:grid-cols-2 gap-12 items-stretch mt-12">
+          
+          {/* Projects Content Panel (Left Column) */}
+          <div className="cyber-card p-8 rounded-3xl flex flex-col justify-between space-y-6">
+            <div>
+              {/* Category Filter buttons */}
+              <div className="flex flex-wrap gap-2 mb-6">
+                {filters.map((f) => (
+                  <motion.button key={f} onClick={() => setActive(f)} whileTap={{ scale: 0.96 }}
+                    className={`px-4 py-2 rounded-lg font-mono-hacker font-semibold text-xs tracking-wider transition-all duration-300 ${active === f ? "bg-accent text-black font-bold shadow-md shadow-green-500/20" : "bg-surface border border-accent-2/20 text-text-secondary hover:border-accent-2/50 hover:text-text-primary"}`}>
+                    {f}
+                  </motion.button>
+                ))}
+              </div>
+
+              <AnimatePresence mode="wait">
+                <motion.div key={active} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }} className="space-y-4">
+                  {filtered.map((project, i) => (
+                    <ProjectCard key={project.id} project={project} index={i} />
+                  ))}
+                </motion.div>
+              </AnimatePresence>
+            </div>
+
+            {/* View All Panel */}
+            <div className="border-t border-accent-2/20 pt-6 text-center">
+              <a href="https://github.com/Devanandfarkade" target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-6 py-3 border border-accent/30 text-accent font-mono-hacker text-xs rounded-xl hover:bg-accent/5 hover:border-accent transition-all duration-300">
+                <Github size={14} /> EXPLORE_GITHUB_INDEX
+              </a>
+            </div>
           </div>
+
+          {/* 3D Brain Point Cloud Scene (Right Column - matches height) */}
+          <div className="relative w-full h-full min-h-[450px] lg:min-h-0 rounded-3xl overflow-hidden border border-accent/20 bg-surface/25 flex items-stretch">
+            <ViewportCanvas title="COGNITIVE_SYNAPSE_CONNECTION_WEB">
+              <ProjectsScene />
+            </ViewportCanvas>
+          </div>
+          
         </div>
-
-        <div className="flex flex-wrap justify-center gap-3 mb-10">
-          {filters.map((f) => (
-            <motion.button key={f} onClick={() => setActive(f)} whileTap={{ scale: 0.95 }}
-              className={`px-6 py-2.5 rounded-full font-dm font-medium text-sm transition-all duration-300 ${active === f ? "bg-accent text-white shadow-lg shadow-purple-500/30" : "bg-surface border border-purple-900/40 text-text-secondary hover:border-accent/50 hover:text-text-primary"}`}>
-              {f}
-            </motion.button>
-          ))}
-        </div>
-
-        <AnimatePresence mode="wait">
-          <motion.div key={active} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filtered.map((project, i) => <ProjectCard key={project.id} project={project} index={i} />)}
-          </motion.div>
-        </AnimatePresence>
-
-        <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="text-center mt-12">
-          <a href="https://github.com" target="_blank" rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-8 py-3.5 border border-purple-500/40 text-text-secondary font-dm font-medium rounded-xl hover:border-accent/70 hover:text-accent hover:bg-accent/5 transition-all duration-300">
-            <Github size={16} /> View All on GitHub
-          </a>
-        </motion.div>
       </div>
     </section>
   );

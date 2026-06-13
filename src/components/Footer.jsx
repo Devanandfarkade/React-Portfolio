@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Github, Linkedin, Twitter, Mail, Heart, ArrowUp } from "lucide-react";
+import { Github, Linkedin, Mail, Shield, ArrowUp } from "lucide-react";
 
 const links = [
   { label: "About", href: "#about" },
@@ -17,7 +17,6 @@ const socials = [
     href: "https://linkedin.com/in/devanandfarkade",
     label: "LinkedIn",
   },
-  { icon: Twitter, href: "https://twitter.com/", label: "Twitter" },
   { icon: Mail, href: "mailto:devaapatil330@gmail.com", label: "Email" },
 ];
 
@@ -25,25 +24,24 @@ export default function Footer() {
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
   return (
-    <footer className="relative bg-surface/40 border-t border-purple-900/20 overflow-hidden">
+    <footer className="relative bg-[#020308] border-t border-accent/25 overflow-hidden hacker-grid">
       {/* Top glow line */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-px bg-gradient-to-r from-transparent via-accent to-transparent" />
 
       <div className="max-w-7xl mx-auto px-6 lg:px-12 py-14">
         <div className="grid md:grid-cols-3 gap-10 mb-12">
           {/* Brand */}
-          <div>
+          <div className="space-y-4">
             <a
               href="#hero"
-              className="font-syne font-bold text-2xl gradient-text mb-4 block"
+              className="font-mono-hacker font-bold text-lg text-accent tracking-wider block"
             >
-              {"<Devaa />"}
+              &lt;DEVA_SYSTEM_TERMINAL /&gt;
             </a>
             <p className="font-dm text-sm text-text-secondary leading-relaxed max-w-xs">
-              MERN Stack Developer crafting performant, accessible, and visually
-              stunning digital experiences.
+              Full Stack Developer crafting performant, scalable, and secure digital architectures with React.js, Node.js, and Java.
             </p>
-            <div className="flex gap-3 mt-6">
+            <div className="flex gap-2.5 pt-2">
               {socials.map(({ icon: Icon, href, label }) => (
                 <motion.a
                   key={label}
@@ -51,69 +49,71 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  whileHover={{ scale: 1.1, y: -2 }}
-                  className="w-9 h-9 flex items-center justify-center rounded-lg bg-surface-2 border border-purple-900/30 text-text-secondary hover:text-accent hover:border-accent/40 transition-all duration-200"
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  className="w-8 h-8 flex items-center justify-center rounded bg-surface border border-accent-2/15 text-text-secondary hover:text-accent hover:border-accent/40 transition-all duration-200"
                 >
-                  <Icon size={16} />
+                  <Icon size={14} />
                 </motion.a>
               ))}
             </div>
           </div>
 
           {/* Quick links */}
-          <div>
-            <h4 className="font-syne font-semibold text-text-primary mb-5">
-              Quick Links
+          <div className="space-y-4">
+            <h4 className="font-mono-hacker font-semibold text-text-primary text-xs uppercase tracking-wider">
+              &gt; SCHEMATIC_INDEX
             </h4>
-            <ul className="grid grid-cols-2 gap-2">
+            <ul className="grid grid-cols-2 gap-2 font-mono-hacker text-xs">
               {links.map(({ label, href }) => (
                 <li key={label}>
                   <a
                     href={href}
-                    className="font-dm text-sm text-text-secondary hover:text-accent transition-colors duration-200"
+                    className="text-text-secondary hover:text-accent transition-colors duration-150"
                   >
-                    {label}
+                    [{label.toUpperCase()}]
                   </a>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Availability CTA */}
-          <div>
-            <h4 className="font-syne font-semibold text-text-primary mb-5">
-              Work Together
+          {/* Comms Link */}
+          <div className="space-y-4">
+            <h4 className="font-mono-hacker font-semibold text-text-primary text-xs uppercase tracking-wider">
+              &gt; HANDSHAKE_QUEUE
             </h4>
-            <p className="font-dm text-sm text-text-secondary mb-4">
-              Looking for a dedicated developer? Let's build something great.
+            <p className="font-dm text-sm text-text-secondary leading-relaxed">
+              Have an integration requirement or open node vacancy? Establish comms pipeline.
             </p>
             <a
               href="#contact"
-              className="inline-flex items-center gap-2 px-5 py-3 bg-accent/10 border border-accent/30 text-accent font-dm text-sm font-medium rounded-xl hover:bg-accent/20 transition-all duration-300"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-accent/5 border border-accent/35 text-accent font-mono-hacker text-xs font-semibold rounded hover:bg-accent hover:text-black transition-all duration-200"
             >
-              <Mail size={14} />
-              Start a Conversation
+              <Mail size={12} />
+              INIT_COMM_LINK
             </a>
           </div>
         </div>
 
         {/* Bottom bar */}
-        <div className="border-t border-purple-900/20 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="font-dm text-sm text-muted flex items-center gap-1.5">
-            Built with <Heart size={13} className="text-red-400 fill-red-400" />{" "}
-            using React, Tailwind & Three.js
-            <span className="mx-1">·</span>© {new Date().getFullYear()} Your
-            Name
+        <div className="border-t border-accent-2/15 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="font-mono-hacker text-[10px] text-text-secondary/50 flex flex-wrap items-center gap-1.5 justify-center sm:justify-start">
+            <Shield size={10} className="text-accent animate-pulse" />
+            <span>SYS_STABLE</span>
+            <span>·</span>
+            <span>PORTFOLIO_CORE v2.0.8</span>
+            <span>·</span>
+            <span>© {new Date().getFullYear()} DEVANAND FARKADE</span>
           </p>
 
           <motion.button
             onClick={scrollToTop}
-            whileHover={{ scale: 1.1, y: -2 }}
-            whileTap={{ scale: 0.95 }}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-surface border border-purple-900/30 text-text-secondary hover:text-accent hover:border-accent/40 font-dm text-sm transition-all duration-200"
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            className="flex items-center gap-2 px-4 py-2 rounded bg-surface border border-accent-2/20 text-text-secondary hover:text-accent hover:border-accent font-mono-hacker text-xs tracking-wider transition-all duration-150"
           >
-            <ArrowUp size={14} />
-            Back to top
+            <ArrowUp size={12} />
+            BACK_TO_TOP
           </motion.button>
         </div>
       </div>

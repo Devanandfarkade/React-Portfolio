@@ -35,7 +35,7 @@ export default function Navbar() {
           }
         });
       },
-      { threshold: 0.4 },
+      { threshold: 0.3 },
     );
     navLinks.forEach(({ href }) => {
       const el = document.querySelector(href);
@@ -49,10 +49,10 @@ export default function Navbar() {
       <motion.nav
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.7, ease: "easeOut" }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           scrolled
-            ? "bg-[#060411]/90 backdrop-blur-xl border-b border-purple-900/30 shadow-lg shadow-purple-900/10"
+            ? "bg-[#020308]/90 backdrop-blur-xl border-b border-accent/20 shadow-lg shadow-green-950/10"
             : "bg-transparent"
         }`}
       >
@@ -60,21 +60,21 @@ export default function Navbar() {
           {/* Logo */}
           <motion.a
             href="#hero"
-            className="font-syne font-bold text-xl"
-            whileHover={{ scale: 1.05 }}
+            className="font-mono-hacker font-bold text-lg text-accent tracking-wider"
+            whileHover={{ scale: 1.03 }}
           >
-            <span className="gradient-text">{"<Devaa />"}</span>
+            &lt;<span className="text-white">DEVA_CORE</span> /&gt;
           </motion.a>
 
           {/* Desktop Links */}
-          <ul className="hidden lg:flex items-center gap-1">
+          <ul className="hidden lg:flex items-center gap-1.5">
             {navLinks.map(({ label, href }) => {
               const isActive = active === href.slice(1);
               return (
                 <li key={label}>
                   <a
                     href={href}
-                    className={`relative px-4 py-2 font-dm text-sm font-medium rounded-full transition-all duration-300 ${
+                    className={`relative px-3.5 py-1.5 font-mono-hacker text-xs font-semibold tracking-wider transition-all duration-300 ${
                       isActive
                         ? "text-accent"
                         : "text-text-secondary hover:text-text-primary"
@@ -83,15 +83,15 @@ export default function Navbar() {
                     {isActive && (
                       <motion.span
                         layoutId="nav-pill"
-                        className="absolute inset-0 bg-purple-500/10 border border-purple-500/30 rounded-full"
+                        className="absolute inset-0 bg-accent/5 border border-accent/30 rounded"
                         transition={{
                           type: "spring",
-                          bounce: 0.2,
-                          duration: 0.4,
+                          bounce: 0.1,
+                          duration: 0.35,
                         }}
                       />
                     )}
-                    <span className="relative">{label}</span>
+                    <span className="relative">[{label.toUpperCase()}]</span>
                   </a>
                 </li>
               );
@@ -101,21 +101,22 @@ export default function Navbar() {
           {/* CTA + Mobile Toggle */}
           <div className="flex items-center gap-3">
             <motion.a
-              href="https://www.overleaf.com/project/69f4ccd2a77545648f1565de"
-              download
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="hidden sm:flex items-center gap-2 px-4 py-2 bg-accent/10 border border-accent/40 text-accent text-sm font-dm font-medium rounded-full hover:bg-accent/20 transition-all duration-300"
+              href="https://linkedin.com/in/devanandfarkade"
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              className="hidden sm:flex items-center gap-1.5 px-4 py-1.5 bg-accent/5 border border-accent/35 text-accent text-xs font-mono-hacker font-bold rounded hover:bg-accent hover:text-black transition-all duration-200"
             >
-              <Download size={14} />
-              Resume
+              <Download size={12} />
+              DISCV_SHELL
             </motion.a>
 
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="lg:hidden p-2 text-text-secondary hover:text-text-primary transition-colors"
+              className="lg:hidden p-2 text-text-secondary hover:text-accent transition-colors"
             >
-              {menuOpen ? <X size={22} /> : <Menu size={22} />}
+              {menuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
           </div>
         </div>
@@ -125,42 +126,43 @@ export default function Navbar() {
       <AnimatePresence>
         {menuOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
+            initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.25 }}
-            className="fixed top-16 left-0 right-0 z-40 bg-[#0f0b1a]/95 backdrop-blur-xl border-b border-purple-900/30"
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+            className="fixed top-16 left-0 right-0 z-40 bg-[#070c19]/95 backdrop-blur-xl border-b border-accent/25"
           >
             <ul className="flex flex-col p-6 gap-2">
               {navLinks.map(({ label, href }, i) => (
                 <motion.li
                   key={label}
-                  initial={{ opacity: 0, x: -20 }}
+                  initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.06 }}
+                  transition={{ delay: i * 0.04 }}
                 >
                   <a
                     href={href}
                     onClick={() => setMenuOpen(false)}
-                    className="block px-4 py-3 text-text-secondary hover:text-accent font-dm font-medium rounded-xl hover:bg-purple-500/10 transition-all duration-200"
+                    className="block px-4 py-3 text-text-secondary hover:text-accent font-mono-hacker text-xs tracking-wider rounded hover:bg-accent/5 transition-all duration-150"
                   >
-                    {label}
+                    &gt; {label.toUpperCase()}
                   </a>
                 </motion.li>
               ))}
               <motion.li
-                initial={{ opacity: 0, x: -20 }}
+                initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: navLinks.length * 0.06 }}
+                transition={{ delay: navLinks.length * 0.04 }}
                 className="pt-2"
               >
                 <a
-                  href="/resume.pdf"
-                  download
-                  className="flex items-center gap-2 px-4 py-3 bg-accent text-white font-dm font-medium rounded-xl"
+                  href="https://linkedin.com/in/devanandfarkade"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 px-4 py-3 bg-accent text-black font-mono-hacker font-bold text-xs rounded"
                 >
-                  <Download size={14} />
-                  Download Resume
+                  <Download size={12} />
+                  CONNECT ON LINKEDIN
                 </a>
               </motion.li>
             </ul>

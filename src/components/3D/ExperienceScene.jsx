@@ -2,7 +2,6 @@ import { useRef, useMemo, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, Environment, useGLTF, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 
 function fixMaterials(scene) {
     scene.traverse((child) => {
@@ -106,43 +105,37 @@ function TimelineParticles({ count = 80 }) {
             <bufferGeometry>
                 <bufferAttribute ref={posAttr} attach="attributes-position" args={[initPos, 3]} />
             </bufferGeometry>
-            <pointsMaterial size={0.05} color="#f59e0b" transparent opacity={0.5} sizeAttenuation />
+            <pointsMaterial size={0.05} color="#00e5ff" transparent opacity={0.5} sizeAttenuation />
         </points>
     );
 }
 
 export default function ExperienceScene() {
-    const ref = useRef(null);
-    const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-    const rawX = useTransform(scrollYProgress, [0, 0.35, 0.65, 1], [90, 0, 0, -50]);
-    const rawOpacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
-    const x = useSpring(rawX, { stiffness: 65, damping: 22 });
-
     return (
-        <motion.div ref={ref} style={{ x, opacity: rawOpacity }} className="w-full h-full">
+        <div style={{ width: "100%", height: "100%", position: "relative", zIndex: 1, pointerEvents: "auto" }}>
             <Canvas camera={{ position: [0, 0, 5.5], fov: 55 }}
                 gl={{ alpha: true, antialias: true }} shadows style={{ background: "transparent" }}>
-                <ambientLight intensity={2.8} color="#ffffff" />
-                <directionalLight position={[5, 8, 5]} intensity={3.5} color="#ffffff" castShadow />
-                <directionalLight position={[-4, 2, -4]} intensity={2} color="#fbbf24" />
-                <pointLight position={[3, 4, 3]} intensity={5} color="#f59e0b" />
-                <pointLight position={[-3, -3, 3]} intensity={3} color="#a855f7" />
-                <pointLight position={[0, 6, 0]} intensity={2.5} color="#fde68a" />
+                <ambientLight intensity={1.8} color="#ffffff" />
+                <directionalLight position={[5, 8, 5]} intensity={2.5} color="#ffffff" castShadow />
+                <directionalLight position={[-4, 2, -4]} intensity={2.0} color="#39ff14" />
+                <pointLight position={[3, 4, 3]} intensity={3.0} color="#ff007f" />
+                <pointLight position={[-3, -3, 3]} intensity={2.5} color="#00e5ff" />
+                <pointLight position={[0, 6, 0]} intensity={2.0} color="#39ff14" />
                 <Environment preset="forest" />
 
                 <RobotCharacter />
-                <GearRing radius={2.5} y={0} speed={0.3} color="#f59e0b" teeth={16} />
-                <GearRing radius={3.2} y={0} speed={-0.2} color="#a855f7" teeth={20} />
-                <GearRing radius={3.9} y={0} speed={0.12} color="#06b6d4" teeth={24} />
-                <CrystalShard position={[-3.5, 1, -1]} color="#f59e0b" scale={0.7} />
-                <CrystalShard position={[3.5, 0.5, -1]} color="#a855f7" scale={0.5} />
-                <CrystalShard position={[0, 2.8, -2]} color="#06b6d4" scale={0.6} />
-                <CrystalShard position={[-2, -2, 1]} color="#fbbf24" scale={0.4} />
-                <TimelineParticles count={70} />
+                <GearRing radius={2.5} y={0} speed={0.3} color="#39ff14" teeth={16} />
+                <GearRing radius={3.2} y={0} speed={-0.2} color="#00e5ff" teeth={20} />
+                <GearRing radius={3.9} y={0} speed={0.12} color="#ff007f" teeth={24} />
+                <CrystalShard position={[-3.5, 1, -1]} color="#39ff14" scale={0.7} />
+                <CrystalShard position={[3.5, 0.5, -1]} color="#ff007f" scale={0.5} />
+                <CrystalShard position={[0, 2.8, -2]} color="#00e5ff" scale={0.6} />
+                <CrystalShard position={[-2, -2, 1]} color="#39ff14" scale={0.4} />
+                <TimelineParticles count={50} />
 
                 <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.9}
-                    maxPolarAngle={Math.PI / 1.8} minPolarAngle={Math.PI / 3.5} enableRotate={false} />
+                    maxPolarAngle={Math.PI / 1.8} minPolarAngle={Math.PI / 3.5} enableRotate={true} />
             </Canvas>
-        </motion.div>
+        </div>
     );
 }

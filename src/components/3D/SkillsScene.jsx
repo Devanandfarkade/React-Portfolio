@@ -2,7 +2,6 @@ import { useRef, useMemo, useState, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, Environment, useGLTF, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 
 function fixMaterials(scene) {
     scene.traverse((child) => {
@@ -50,7 +49,7 @@ function HoloScan() {
     });
     return (
         <mesh ref={ref} geometry={geo} rotation={[0, 0, 0]}>
-            <meshBasicMaterial color="#06b6d4" transparent opacity={0.3} side={THREE.DoubleSide} />
+            <meshBasicMaterial color="#00e5ff" transparent opacity={0.3} side={THREE.DoubleSide} />
         </mesh>
     );
 }
@@ -58,7 +57,7 @@ function HoloScan() {
 // Vertical neon data stream columns
 function DataStream({ x, z, speed, color }) {
     const ref = useRef();
-    const count = 20;
+    const count = 15;
     const positions = useMemo(() => {
         const pos = new Float32Array(count * 3);
         for (let i = 0; i < count; i++) {
@@ -105,7 +104,7 @@ function NeonGrid() {
     });
     return (
         <lineSegments ref={ref} geometry={geo}>
-            <lineBasicMaterial color="#a855f7" transparent opacity={0.15} />
+            <lineBasicMaterial color="#39ff14" transparent opacity={0.15} />
         </lineSegments>
     );
 }
@@ -122,42 +121,50 @@ function HoloCube() {
     return (
         <mesh ref={ref} scale={3.5} position={[0, 0, 0]}>
             <boxGeometry args={[1, 1, 1]} />
-            <meshBasicMaterial color="#06b6d4" wireframe transparent opacity={0.08} />
+            <meshBasicMaterial color="#00e5ff" wireframe transparent opacity={0.08} />
         </mesh>
     );
 }
 
 export default function SkillsScene() {
-    const ref = useRef(null);
-    const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-    const rawY = useTransform(scrollYProgress, [0, 0.4, 0.6, 1], [60, 0, 0, -40]);
-    const rawOpacity = useTransform(scrollYProgress, [0, 0.15, 0.85, 1], [0, 1, 1, 0]);
-    const y = useSpring(rawY, { stiffness: 70, damping: 22 });
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        setIsMobile(window.innerWidth < 768);
+    }, []);
 
     return (
-        <motion.div ref={ref} style={{ y, opacity: rawOpacity }} className="w-full h-full">
+        <div
+            style={{
+                width: "100%",
+                height: "100%",
+                position: "relative",
+                zIndex: 1,
+                pointerEvents: "auto",
+            }}
+        >
             <Canvas camera={{ position: [0, 0.5, 5.5], fov: 55 }}
                 gl={{ alpha: true, antialias: true }} shadows style={{ background: "transparent" }}>
-                <ambientLight intensity={2.8} color="#ffffff" />
-                <directionalLight position={[5, 8, 5]} intensity={3.5} color="#ffffff" castShadow />
-                <directionalLight position={[-4, 2, -4]} intensity={2} color="#a855f7" />
-                <pointLight position={[3, 4, 3]} intensity={5} color="#06b6d4" />
-                <pointLight position={[-3, -3, 3]} intensity={3} color="#a855f7" />
-                <pointLight position={[0, -1, 4]} intensity={3.5} color="#22d3ee" />
+                <ambientLight intensity={1.8} color="#ffffff" />
+                <directionalLight position={[5, 8, 5]} intensity={2.5} color="#ffffff" castShadow />
+                <directionalLight position={[-4, 2, -4]} intensity={2.0} color="#39ff14" />
+                <pointLight position={[3, 4, 3]} intensity={3.0} color="#00e5ff" />
+                <pointLight position={[-3, -3, 3]} intensity={2.5} color="#ff007f" />
+                <pointLight position={[0, -1, 4]} intensity={3.0} color="#00e5ff" />
                 <Environment preset="night" />
 
                 <LaptopModel />
                 <HoloScan />
                 <NeonGrid />
                 <HoloCube />
-                <DataStream x={-3.5} z={-1} speed={1.2} color="#06b6d4" />
-                <DataStream x={3.5} z={-1} speed={0.8} color="#a855f7" />
-                <DataStream x={-2} z={-3} speed={1.5} color="#22d3ee" />
-                <DataStream x={2} z={-3} speed={1.0} color="#f0abfc" />
+                <DataStream x={-3.5} z={-1} speed={1.2} color="#00e5ff" />
+                <DataStream x={3.5} z={-1} speed={0.8} color="#39ff14" />
+                <DataStream x={-2} z={-3} speed={1.5} color="#ff007f" />
+                <DataStream x={2} z={-3} speed={1.0} color="#00e5ff" />
 
                 <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.7}
-                    maxPolarAngle={Math.PI / 2} minPolarAngle={Math.PI / 4} enableRotate={false} />
+                    maxPolarAngle={Math.PI / 2} minPolarAngle={Math.PI / 4} enableRotate={true} />
             </Canvas>
-        </motion.div>
+        </div>
     );
 }

@@ -1,69 +1,85 @@
-import { useRef, Suspense } from 'react';
+import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Award, ExternalLink, Calendar, CheckCircle } from 'lucide-react';
 import SectionTitle from './SectionTitle';
 import CertsScene from './3D/CertsScene';
+import ViewportCanvas from './ViewportCanvas';
 
 const certs = [
-  { id: 1, title: 'Meta React Developer Certificate', issuer: 'Meta (Coursera)', date: 'March 2024', credId: 'META-REACT-2024', link: 'https://coursera.org', color: '#0081fb', icon: '⚛️', skills: ['React', 'JSX', 'Hooks', 'Component Design'] },
-  { id: 2, title: 'Node.js & MongoDB Full Stack', issuer: 'Udemy', date: 'January 2024', credId: 'UC-NODE-MONGO-01', link: 'https://udemy.com', color: '#a435f0', icon: '🟢', skills: ['Node.js', 'Express', 'MongoDB', 'REST API'] },
-  { id: 3, title: 'AWS Cloud Practitioner', issuer: 'Amazon Web Services', date: 'November 2023', credId: 'AWS-CLF-C01-2023', link: 'https://aws.amazon.com', color: '#ff9900', icon: '☁️', skills: ['Cloud', 'EC2', 'S3', 'Lambda'] },
-  { id: 4, title: 'JavaScript Algorithms & DS', issuer: 'freeCodeCamp', date: 'August 2023', credId: 'FCC-JS-ALG-2023', link: 'https://freecodecamp.org', color: '#0a0a23', icon: '🏅', skills: ['DSA', 'ES6+', 'OOP', 'Functional Programming'] },
-  { id: 5, title: 'Google UX Design Certificate', issuer: 'Google (Coursera)', date: 'June 2023', credId: 'GOOGLE-UX-2023', link: 'https://coursera.org', color: '#4285f4', icon: '🎨', skills: ['UX Research', 'Figma', 'Prototyping', 'User Testing'] },
-  { id: 6, title: 'TypeScript Fundamentals', issuer: 'LinkedIn Learning', date: 'March 2023', credId: 'LI-TS-FUND-2023', link: 'https://linkedin.com/learning', color: '#0077b5', icon: '🔷', skills: ['TypeScript', 'Generics', 'Interfaces', 'Type Guards'] },
+  { id: 1, title: 'Java Full Stack Development', issuer: 'QSpiders Wakad, Pune', date: 'Mar 2023 - Sep 2023', credId: 'QS-JFS-2023', link: 'https://qspiders.com', color: '#39ff14', icon: '☕', skills: ['Java', 'SQL', 'Web Technologies', 'J2EE'] },
+  { id: 2, title: 'Java Full Stack Development', issuer: 'Symbiosis (Capgemini), Pune', date: 'Jun 2024 - Aug 2024', credId: 'SYM-CAP-24', link: 'https://capgemini.com', color: '#00e5ff', icon: '💻', skills: ['Enterprise Java', 'Spring Boot', 'Angular', 'Agile'] },
+  { id: 3, title: "Technology's Impact on Business", issuer: 'HP LIFE Online Course', date: 'Oct 2022 - Nov 2022', credId: 'HP-LIFE-2022', link: 'https://life-global.org', color: '#ffb700', icon: '📊', skills: ['Business IT', 'Tech Strategy', 'Analytics'] },
+  { id: 4, title: 'Basics of Java Certification', issuer: 'CodeChef', date: 'Aug 2023', credId: 'CC-JAVA-23', link: 'https://codechef.com', color: '#ff007f', icon: '🍳', skills: ['Java Basics', 'OOPs', 'Problem Solving'] },
 ];
 
 function CertCard({ cert, index }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-50px' });
   return (
-    <motion.div ref={ref} initial={{ opacity: 0, y: 30 }} animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.55, delay: index * 0.1 }}
-      className="group relative p-6 rounded-2xl bg-surface glow-border hover:shadow-xl hover:shadow-purple-900/15 transition-all duration-300 hover:-translate-y-1 overflow-hidden">
-      <div className="absolute top-0 left-0 right-0 h-0.5 opacity-70" style={{ background: `linear-gradient(90deg, ${cert.color}, transparent)` }} />
-      <div className="flex items-start justify-between mb-4">
-        <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0" style={{ backgroundColor: cert.color + '20' }}>{cert.icon}</div>
-        <a href={cert.link} target="_blank" rel="noopener noreferrer" className="opacity-0 group-hover:opacity-100 w-8 h-8 flex items-center justify-center rounded-lg bg-surface-2 hover:bg-accent/20 text-muted hover:text-accent transition-all duration-200">
-          <ExternalLink size={13} />
-        </a>
+    <motion.div ref={ref} initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.5, delay: index * 0.08 }}
+      className="group relative p-5 rounded-2xl bg-surface/50 border border-accent-2/15 hover:border-accent/40 hover:bg-surface-2/40 transition-all duration-300 overflow-hidden flex flex-col justify-between">
+      <div className="absolute top-0 left-0 right-0 h-0.5 opacity-60" style={{ background: `linear-gradient(90deg, ${cert.color}, transparent)` }} />
+      
+      <div>
+        <div className="flex items-start justify-between mb-3 border-b border-accent-2/10 pb-2">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0" style={{ backgroundColor: cert.color + '15' }}>{cert.icon}</div>
+          <a href={cert.link} target="_blank" rel="noopener noreferrer" className="opacity-0 group-hover:opacity-100 w-7 h-7 flex items-center justify-center rounded-lg bg-surface border border-accent-2/20 hover:border-accent hover:text-accent transition-all duration-200">
+            <ExternalLink size={12} />
+          </a>
+        </div>
+        <h3 className="font-mono-hacker font-bold text-sm text-text-primary leading-snug group-hover:text-accent transition-colors duration-300 tracking-wider">{cert.title}</h3>
+        <div className="flex items-center gap-1.5 mt-2 mb-2">
+          <Award size={11} style={{ color: cert.color }} />
+          <span className="font-mono-hacker text-xs" style={{ color: cert.color }}>{cert.issuer}</span>
+        </div>
+        <div className="flex items-center gap-1 text-[10px] font-mono-hacker text-text-secondary mb-4">
+          <Calendar size={10} /> {cert.date} <span className="mx-1">·</span> <CheckCircle size={10} className="text-accent" /> <span className="text-accent">VERIFIED</span>
+        </div>
       </div>
-      <h3 className="font-syne font-bold text-text-primary text-base mb-1 leading-snug group-hover:text-accent transition-colors duration-300">{cert.title}</h3>
-      <div className="flex items-center gap-1.5 mb-3"><Award size={12} style={{ color: cert.color }} /><span className="font-dm text-sm font-medium" style={{ color: cert.color }}>{cert.issuer}</span></div>
-      <div className="flex items-center gap-1.5 mb-4 text-xs font-dm text-muted">
-        <Calendar size={11} />{cert.date}<span className="mx-1">·</span><CheckCircle size={11} className="text-green-400" /><span className="text-green-400/80">Verified</span>
+
+      <div>
+        <div className="flex flex-wrap gap-1 mb-3">
+          {cert.skills.map((s) => <span key={s} className="text-[9px] font-mono-hacker px-2 py-0.5 rounded bg-surface border border-accent-2/10 text-text-secondary">{s}</span>)}
+        </div>
+        <div className="pt-2.5 border-t border-accent-2/10 flex justify-between text-[9px] font-mono-hacker text-text-secondary/50">
+          <span>CRED_ID: {cert.credId}</span>
+          <span>SYS_VER: 2.0</span>
+        </div>
       </div>
-      <div className="flex flex-wrap gap-1.5">
-        {cert.skills.map((s) => <span key={s} className="text-xs font-dm px-2 py-0.5 rounded-md bg-surface-2 text-text-secondary border border-purple-900/25">{s}</span>)}
-      </div>
-      <div className="mt-4 pt-4 border-t border-purple-900/20"><span className="text-xs font-dm text-muted">ID: {cert.credId}</span></div>
     </motion.div>
   );
 }
 
 export default function Certifications() {
   return (
-    <section id="certifications" className="relative py-24 bg-surface/20 overflow-hidden">
+    <section id="certifications" className="relative py-24 bg-surface/5 overflow-hidden hacker-grid">
       <div className="absolute inset-0 bg-gradient-to-b from-bg via-transparent to-bg pointer-events-none" />
 
       <div className="relative max-w-7xl mx-auto px-6 lg:px-12">
-        <SectionTitle tag="Credentials" title="My" highlight="Certifications"
-          subtitle="Industry-recognized credentials validating my technical expertise." />
+        <SectionTitle tag="SYSTEM_CREDENTIALS" title="VERIFIED_CERTIFICATES:" highlight="CREDENTIALS"
+          subtitle="Loading professional accreditations and capstone validation tokens..." />
 
-        <div className="grid lg:grid-cols-5 gap-10 items-start">
-          {/* 3D Medal scene */}
-          <div className="lg:col-span-2 relative h-[380px] lg:h-[520px] rounded-3xl overflow-hidden bg-surface/20 glow-border sticky top-24">
-            <Suspense fallback={null}>
+        {/* Side-by-side equal-height layout: 3D Left, Content Right */}
+        <div className="grid lg:grid-cols-2 gap-12 items-stretch mt-12">
+          
+          {/* 3D Medal scene (Left Column) */}
+          <div className="relative w-full h-full min-h-[450px] lg:min-h-0 rounded-3xl overflow-hidden border border-accent/20 bg-surface/20">
+            <ViewportCanvas title="ACCREDITATIONS_MEDALLION_3D">
               <CertsScene />
-            </Suspense>
-            <div className="absolute bottom-0 left-0 right-0 p-5 text-center pointer-events-none">
-              <span className="font-syne font-bold gradient-text text-lg">Earned with Excellence</span>
+            </ViewportCanvas>
+          </div>
+
+          {/* Cert cards list (Right Column - matching height) */}
+          <div className="cyber-card p-8 rounded-3xl space-y-5 flex flex-col justify-between overflow-y-auto max-h-[700px]">
+            <div className="grid sm:grid-cols-2 gap-4">
+              {certs.map((cert, i) => <CertCard key={cert.id} cert={cert} index={i} />)}
+            </div>
+            <div className="border-t border-accent-2/20 pt-4 text-left font-mono-hacker text-[10px] text-accent-2/50">
+              SYS_LOG: VERIFIED SIGNATURE CERTIFICATE REGISTRY RETRIEVED. STATUS: COMPLETE.
             </div>
           </div>
-
-          {/* Cert cards */}
-          <div className="lg:col-span-3 grid sm:grid-cols-2 gap-4">
-            {certs.map((cert, i) => <CertCard key={cert.id} cert={cert} index={i} />)}
-          </div>
+          
         </div>
       </div>
     </section>
