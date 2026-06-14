@@ -1,34 +1,47 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
-import { SiReact, SiNodedotjs, SiMongodb, SiExpress, SiTailwindcss, SiJavascript, SiGit, SiPostgresql, SiGithub, SiHtml5, SiCss } from "react-icons/si";
-import { FaJava, FaServer } from "react-icons/fa";
+import * as SiIcons from "react-icons/si";
+import * as FaIcons from "react-icons/fa";
 import SectionTitle from "./SectionTitle";
 import SkillsScene from "./3D/SkillsScene";
 import ViewportCanvas from "./ViewportCanvas";
 import { useScrollIndicator, ScrollIndicator } from "./ScrollIndicator";
+import { api } from "../services/api";
 
 const categories = ["ALL", "FRONTEND", "BACKEND", "TOOLS"];
-const skills = [
-  { name: "React.js", icon: SiReact, level: 90, color: "#61dafb", cat: "FRONTEND" },
-  { name: "JavaScript", icon: SiJavascript, level: 88, color: "#f7df1e", cat: "FRONTEND" },
-  { name: "Tailwind CSS", icon: SiTailwindcss, level: 92, color: "#06b6d4", cat: "FRONTEND" },
-  { name: "HTML5", icon: SiHtml5, level: 95, color: "#e34f26", cat: "FRONTEND" },
-  { name: "CSS3", icon: SiCss, level: 90, color: "#1572b6", cat: "FRONTEND" },
-  { name: "Node.js", icon: SiNodedotjs, level: 85, color: "#339933", cat: "BACKEND" },
-  { name: "Express.js", icon: SiExpress, level: 82, color: "#ffffff", cat: "BACKEND" },
-  { name: "Java", icon: FaJava, level: 86, color: "#007396", cat: "BACKEND" },
-  { name: "Spring Boot", icon: FaServer, level: 78, color: "#6db33f", cat: "BACKEND" },
-  { name: "PostgreSQL", icon: SiPostgresql, level: 80, color: "#336791", cat: "BACKEND" },
-  { name: "MySQL", icon: FaServer, level: 85, color: "#4479a1", cat: "BACKEND" },
-  { name: "MongoDB", icon: SiMongodb, level: 80, color: "#47a248", cat: "BACKEND" },
-  { name: "Git", icon: SiGit, level: 88, color: "#f05032", cat: "TOOLS" },
-  { name: "GitHub", icon: SiGithub, level: 90, color: "#ffffff", cat: "TOOLS" },
-  { name: "REST APIs", icon: FaServer, level: 87, color: "#00e5ff", cat: "TOOLS" },
+
+const getIconComponent = (iconName) => {
+  if (iconName && iconName.startsWith("Si") && SiIcons[iconName]) {
+    return SiIcons[iconName];
+  }
+  if (iconName && iconName.startsWith("Fa") && FaIcons[iconName]) {
+    return FaIcons[iconName];
+  }
+  return FaIcons.FaServer; // Fallback
+};
+
+const fallbackSkills = [
+  { name: "React.js", icon: SiIcons.SiReact, level: 90, color: "#61dafb", cat: "FRONTEND" },
+  { name: "JavaScript", icon: SiIcons.SiJavascript, level: 88, color: "#f7df1e", cat: "FRONTEND" },
+  { name: "Tailwind CSS", icon: SiIcons.SiTailwindcss, level: 92, color: "#06b6d4", cat: "FRONTEND" },
+  { name: "HTML5", icon: SiIcons.SiHtml5, level: 95, color: "#e34f26", cat: "FRONTEND" },
+  { name: "CSS3", icon: SiIcons.SiCss, level: 90, color: "#1572b6", cat: "FRONTEND" },
+  { name: "Node.js", icon: SiIcons.SiNodedotjs, level: 85, color: "#339933", cat: "BACKEND" },
+  { name: "Express.js", icon: SiIcons.SiExpress, level: 82, color: "#ffffff", cat: "BACKEND" },
+  { name: "Java", icon: FaIcons.FaJava, level: 86, color: "#007396", cat: "BACKEND" },
+  { name: "Spring Boot", icon: FaIcons.FaServer, level: 78, color: "#6db33f", cat: "BACKEND" },
+  { name: "PostgreSQL", icon: SiIcons.SiPostgresql, level: 80, color: "#336791", cat: "BACKEND" },
+  { name: "MongoDB", icon: SiIcons.SiMongodb, level: 80, color: "#47a248", cat: "BACKEND" },
+  { name: "Git", icon: SiIcons.SiGit, level: 88, color: "#f05032", cat: "TOOLS" },
+  { name: "GitHub", icon: SiIcons.SiGithub, level: 90, color: "#ffffff", cat: "TOOLS" },
+  { name: "REST APIs", icon: FaIcons.FaServer, level: 87, color: "#00e5ff", cat: "TOOLS" },
 ];
 
 function SkillBar({ skill, delay }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-40px" });
+  const Icon = typeof skill.icon === "string" ? getIconComponent(skill.icon) : (skill.icon || FaIcons.FaServer);
+
   return (
     <motion.div ref={ref} initial={{ opacity: 0, y: 15 }} animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.4, delay }}
@@ -36,7 +49,7 @@ function SkillBar({ skill, delay }) {
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: `${skill.color}15` }}>
-            <skill.icon size={15} style={{ color: skill.color }} />
+            <Icon size={15} style={{ color: skill.color }} />
           </div>
           <span className="font-mono-hacker text-xs font-semibold text-text-primary">{skill.name}</span>
         </div>
@@ -56,9 +69,34 @@ function SkillBar({ skill, delay }) {
 
 export default function Skills() {
   const [activeTab, setActiveTab] = useState("ALL");
-  const filtered = activeTab === "ALL" ? skills : skills.filter((s) => s.cat === activeTab);
+  const [skillsList, setSkillsList] = useState([]);
+  const [loading, setLoading] = useState(true);
   const scrollRef = useRef(null);
   const showIndicator = useScrollIndicator(scrollRef);
+
+  useEffect(() => {
+    api.getSkills()
+      .then((data) => {
+        if (data.skills && data.skills.length > 0) {
+          const mapped = data.skills.map((s) => ({
+            name: s.name,
+            level: s.level,
+            color: s.color_hex || s.color,
+            icon: s.icon_name || s.iconName,
+            cat: s.category || s.cat
+          }));
+          setSkillsList(mapped);
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch technical skills:", err);
+        setLoading(false);
+      });
+  }, []);
+
+  const displaySkills = skillsList.length > 0 ? skillsList : fallbackSkills;
+  const filtered = activeTab === "ALL" ? displaySkills : displaySkills.filter((s) => s.cat === activeTab);
 
   return (
     <section id="skills" className="relative lg:h-screen lg:max-h-screen lg:min-h-[600px] flex items-center py-12 lg:py-0 bg-surface/10 overflow-hidden hacker-grid">

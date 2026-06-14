@@ -1,13 +1,14 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import { ExternalLink, Github, Database, Cpu, Terminal as TermIcon } from "lucide-react";
 import SectionTitle from "./SectionTitle";
 import ProjectsScene from "./3D/ProjectsScene";
 import ViewportCanvas from "./ViewportCanvas";
 import { useScrollIndicator, ScrollIndicator } from "./ScrollIndicator";
+import { api } from "../services/api";
 
 const filters = ["ALL", "JAVA", "DATABASE"];
-const projects = [
+const fallbackProjects = [
   { 
     id: 1, 
     title: "BANK MANAGEMENT SYSTEM", 
@@ -17,6 +18,7 @@ const projects = [
     repo: "https://github.com/Devanandfarkade", 
     live: null,
     color: "#39ff14", 
+    status: "STABLE",
     featured: true 
   },
   { 
@@ -28,6 +30,7 @@ const projects = [
     repo: "https://github.com/Devanandfarkade", 
     live: null,
     color: "#00e5ff", 
+    status: "STABLE",
     featured: true 
   },
 ];
@@ -38,7 +41,8 @@ function ProjectCard({ project, index }) {
   return (
     <motion.div ref={ref} initial={{ opacity: 0, y: 15 }} animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.45, delay: index * 0.08 }}
-      className="group relative rounded-xl bg-surface/50 border border-accent-2/15 p-5 flex flex-col justify-between hover:bg-surface-2/40 hover:border-accent/40 transition-all duration-300">
+      className="group relative rounded-xl bg-surface/50 border border-accent-2/15 p-5 flex flex-col justify-between hover:bg-surface-2/40 hover:border-accent/40 transition-all duration-300"
+      style={{ borderColor: `${project.color}20` }}>
       
       <div>
         <div className="flex items-center justify-between mb-3 border-b border-accent-2/10 pb-2">
@@ -58,8 +62,8 @@ function ProjectCard({ project, index }) {
             )}
           </div>
         </div>
-
-        <h3 className="font-mono-hacker text-sm font-bold text-text-primary group-hover:text-accent transition-colors duration-300 tracking-wider">
+ 
+        <h3 className="font-mono-hacker text-sm font-bold text-text-primary group-hover:text-accent transition-colors duration-300 tracking-wider" style={{ color: project.color }}>
           {project.title}
         </h3>
         <p className="font-dm text-xs text-text-secondary leading-relaxed mt-2">
@@ -78,7 +82,7 @@ function ProjectCard({ project, index }) {
         
         <div className="border-t border-accent-2/10 pt-2 flex items-center justify-between text-[10px] font-mono-hacker">
           <span className="text-accent/60 flex items-center gap-1">
-            <Database size={9} /> STATUS: STABLE
+            <Database size={9} /> STATUS: {project.status || "STABLE"}
           </span>
           <span className="text-accent-2 flex items-center gap-0.5">
             LOGS <TermIcon size={9} />
@@ -92,17 +96,45 @@ function ProjectCard({ project, index }) {
 
 export default function Projects() {
   const [active, setActive] = useState("ALL");
+  const [projectList, setProjectList] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const scrollRef = useRef(null);
+  const showIndicator = useScrollIndicator(scrollRef);
+
+  useEffect(() => {
+    api.getProjects()
+      .then((data) => {
+        if (data && data.length > 0) {
+          const mapped = data.map((p) => ({
+            id: p.id,
+            title: p.title,
+            desc: p.description,
+            tags: p.tags || [],
+            cat: p.category || "JAVA",
+            repo: p.repo_url,
+            live: p.live_url,
+            color: p.color_hex || "#00e5ff",
+            status: p.status || "STABLE"
+          }));
+          setProjectList(mapped);
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch projects ledger:", err);
+        setLoading(false);
+      });
+  }, []);
+
+  const displayProjects = projectList.length > 0 ? projectList : fallbackProjects;
   
   // Custom filter logic
   const filtered = active === "ALL" 
-    ? projects 
-    : projects.filter((p) => {
-        if (active === "DATABASE") return p.tags.includes("MySQL") || p.tags.includes("Database Design");
+    ? displayProjects 
+    : displayProjects.filter((p) => {
+        if (active === "DATABASE") return p.tags.includes("MySQL") || p.tags.includes("Database Design") || p.tags.includes("PostgreSQL");
         return p.cat === active;
       });
-
-  const scrollRef = useRef(null);
-  const showIndicator = useScrollIndicator(scrollRef);
 
   return (
     <section id="projects" className="relative lg:h-screen lg:max-h-screen lg:min-h-[600px] flex items-center py-12 lg:py-0 bg-bg overflow-hidden hacker-grid">

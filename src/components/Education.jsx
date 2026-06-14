@@ -1,12 +1,13 @@
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import { GraduationCap, Calendar, MapPin, Award } from "lucide-react";
 import SectionTitle from "./SectionTitle";
 import EducationScene from "./3D/EducationScene";
 import ViewportCanvas from "./ViewportCanvas";
 import { useScrollIndicator, ScrollIndicator } from "./ScrollIndicator";
+import { api } from "../services/api";
 
-const education = [
+const fallbackEducation = [
   {
     id: 1, 
     degree: "Master of Computer Applications (MCA)", 
@@ -81,8 +82,36 @@ function EduCard({ edu, index }) {
 }
 
 export default function Education() {
+  const [educationList, setEducationList] = useState([]);
+  const [loading, setLoading] = useState(true);
   const scrollRef = useRef(null);
   const showIndicator = useScrollIndicator(scrollRef);
+
+  useEffect(() => {
+    api.getEducation()
+      .then((data) => {
+        if (data && data.length > 0) {
+          const mapped = data.map((edu) => ({
+            id: edu.id,
+            degree: edu.degree,
+            institution: edu.institution,
+            location: edu.location,
+            period: edu.period,
+            grade: edu.grade,
+            color: edu.color_hex || "#00e5ff",
+            highlights: edu.highlights || []
+          }));
+          setEducationList(mapped);
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch academic credentials:", err);
+        setLoading(false);
+      });
+  }, []);
+
+  const displayEducation = educationList.length > 0 ? educationList : fallbackEducation;
 
   return (
     <section id="education" className="relative lg:h-screen lg:max-h-screen lg:min-h-[600px] flex items-center py-12 lg:py-0 bg-bg overflow-hidden hacker-grid">
@@ -98,7 +127,7 @@ export default function Education() {
           {/* Content (Left Column) */}
           <div className="cyber-card p-6 lg:p-8 rounded-3xl flex flex-col justify-between max-h-[60vh] lg:max-h-[72vh] relative">
             <div ref={scrollRef} className="flex-1 overflow-y-auto pr-3 cyber-scrollbar space-y-4">
-              {education.map((edu, i) => (
+              {displayEducation.map((edu, i) => (
                 <EduCard key={edu.id} edu={edu} index={i} />
               ))}
             </div>

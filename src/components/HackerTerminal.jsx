@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Terminal, Shield, Cpu, RefreshCw } from "lucide-react";
+import { api } from "../services/api";
 
 export default function HackerTerminal() {
   const [input, setInput] = useState("");
@@ -15,6 +16,28 @@ export default function HackerTerminal() {
     ram: 44,
     status: "SECURE"
   });
+
+  const [profile, setProfile] = useState(null);
+  const [skills, setSkills] = useState([]);
+  const [projects, setProjects] = useState([]);
+  const [experiences, setExperiences] = useState([]);
+  const [education, setEducation] = useState([]);
+
+  useEffect(() => {
+    Promise.all([
+      api.getProfile().catch(() => null),
+      api.getSkills().catch(() => null),
+      api.getProjects().catch(() => null),
+      api.getExperience().catch(() => null),
+      api.getEducation().catch(() => null)
+    ]).then(([profileData, skillsData, projectsData, expData, eduData]) => {
+      if (profileData) setProfile(profileData);
+      if (skillsData) setSkills(skillsData.skills || []);
+      if (projectsData) setProjects(projectsData);
+      if (expData) setExperiences(expData);
+      if (eduData) setEducation(eduData);
+    });
+  }, []);
 
   const terminalHistoryRef = useRef(null);
   const inputRef = useRef(null);
@@ -64,69 +87,97 @@ export default function HackerTerminal() {
           { text: "  sudo        - Request root administrative override", type: "info" }
         ];
         break;
-      case "about":
+      case "about": {
+        const name = profile?.name || "DEVANAND FARKADE";
+        const status = profile?.status || "FULL STACK DEVELOPER";
+        const aboutText = profile?.about_text || "Full Stack Developer skilled in React.js and Node.js, passionate about developing efficient, scalable applications and contributing to high-performing development teams.";
+        const location = profile?.location || "Pune, Maharashtra, India";
         response = [
-          { text: "DEVANAND FARKADE - FULL STACK DEVELOPER", type: "title" },
-          { text: "Full Stack Developer skilled in React.js and Node.js, passionate about developing efficient, scalable applications and contributing to high-performing development teams.", type: "text" },
-          { text: "LOCATION: Pune, Maharashtra, India", type: "text" }
+          { text: `${name.toUpperCase()} - ${status.toUpperCase()}`, type: "title" },
+          { text: aboutText, type: "text" },
+          { text: `LOCATION: ${location}`, type: "text" }
         ];
         break;
-      case "skills":
+      }
+      case "skills": {
+        const frontendSkills = skills.filter(s => (s.category || s.cat) === "FRONTEND").map(s => s.name).join(", ") || "React.js, JavaScript, Tailwind CSS, HTML5, CSS3";
+        const backendSkills = skills.filter(s => (s.category || s.cat) === "BACKEND").map(s => s.name).join(", ") || "Node.js, Express.js, Java, Spring Boot, REST APIs";
+        const databaseSkills = skills.filter(s => (s.category || s.cat) === "DATABASE" || s.name.toLowerCase().includes("postgres") || s.name.toLowerCase().includes("sql") || s.name.toLowerCase().includes("mongo")).map(s => s.name).join(", ") || "PostgreSQL, MySQL, MongoDB";
+        const toolsSkills = skills.filter(s => (s.category || s.cat) === "TOOLS").map(s => s.name).join(", ") || "Git, GitHub, REST APIs";
+        
         response = [
           { text: "CORE TECH ASSETS MATRIX:", type: "title" },
           { text: "=========================================", type: "system" },
-          { text: "  FRONTEND : React.js, JavaScript, Tailwind CSS, HTML5, CSS3", type: "text" },
-          { text: "  BACKEND  : Node.js, Express.js, Java, Spring Boot, REST APIs", type: "text" },
-          { text: "  DATABASE : PostgreSQL, MySQL, MongoDB", type: "text" },
-          { text: "  UTILITIES: Git, GitHub, Postman, Jest, Redux Toolkit", type: "text" },
+          { text: `  FRONTEND : ${frontendSkills}`, type: "text" },
+          { text: `  BACKEND  : ${backendSkills}`, type: "text" },
+          { text: `  DATABASE : ${databaseSkills}`, type: "text" },
+          { text: `  UTILITIES: ${toolsSkills}`, type: "text" },
           { text: "=========================================", type: "system" },
           { text: "  SOFT SKILLS: Problem Solving, Analytical Thinking, Communication", type: "info" }
         ];
         break;
-      case "projects":
+      }
+      case "projects": {
+        const list = projects.length > 0 ? projects : [
+          { title: "BANK MANAGEMENT SYSTEM", tags: ["Java", "MySQL"], description: "Banking ledger automating deposits, checks, ATM, and debit card calculations.", status: "STABLE" },
+          { title: "VEHICLE SERVICE CENTER", tags: ["Java", "MySQL", "Spring Tool Suite 4"], description: "Automated billing & invoicing system resolving labor, spare parts, and services.", status: "STABLE" }
+        ];
         response = [
           { text: "DEPLOYED SYSTEM MODULES:", type: "title" },
-          { text: "-----------------------------------------", type: "system" },
-          { text: "1. BANK MANAGEMENT SYSTEM [Online]", type: "info" },
-          { text: "   - Tech: Java, MySQL, GitHub", type: "text" },
-          { text: "   - Desc: Banking ledger automating deposits, checks, ATM, and debit card calculations.", type: "text" },
-          { text: "2. VEHICLE SERVICE CENTER [Online]", type: "info" },
-          { text: "   - Tech: Java, MySQL, Spring Tool Suite 4, GitHub", type: "text" },
-          { text: "   - Desc: Automated billing & invoicing system resolving labor, spare parts, and services.", type: "text" }
+          { text: "-----------------------------------------", type: "system" }
         ];
+        list.forEach((p, i) => {
+          response.push({ text: `${i + 1}. ${p.title.toUpperCase()} [${p.status || "STABLE"}]`, type: "info" });
+          response.push({ text: `   - Tech: ${(p.tags || []).join(", ")}`, type: "text" });
+          response.push({ text: `   - Desc: ${p.description || p.desc}`, type: "text" });
+        });
         break;
-      case "experience":
+      }
+      case "experience": {
+        const list = experiences.length > 0 ? experiences : [
+          { role: "Full Stack Developer", company: "RajYug IT Solutions", period: "Dec 2025 - PRESENT", description: "Built scalable applications using MEAN stack and Java technologies." },
+          { role: "Software Development Engineer (SDE)", company: "Bluestock Fintech", period: "Apr 2025 - May 2025", description: "Developed production IPO web app & secure REST APIs with Django and PostgreSQL." },
+          { role: "Java Developer Intern", company: "Mass Technologies", period: "Jan 2025 - Apr 2025", description: "Programmed attendance system using Java, JSP, and MySQL with role-based logic." }
+        ];
         response = [
           { text: "EMPLOYMENT LOGS:", type: "title" },
-          { text: "-----------------------------------------", type: "system" },
-          { text: "1. FULL STACK DEVELOPER @ RajYug IT Solutions, Pune (Dec 2025 - PRESENT)", type: "info" },
-          { text: "   - Built scalable applications using MEAN stack and Java technologies.", type: "text" },
-          { text: "   - Integrated frontend, API endpoints, optimized database queries.", type: "text" },
-          { text: "2. SOFTWARE DEVELOPMENT ENGINEER (SDE) @ Bluestock Fintech (Apr 2025 - May 2025)", type: "text" },
-          { text: "   - Developed production IPO web app & secure REST APIs with Django and PostgreSQL.", type: "text" },
-          { text: "3. JAVA DEVELOPER INTERN @ Mass Technologies (Jan 2025 - Apr 2025)", type: "text" },
-          { text: "   - Programmed attendance system using Java, JSP, and MySQL with role-based logic.", type: "text" }
+          { text: "-----------------------------------------", type: "system" }
         ];
+        list.forEach((exp, i) => {
+          response.push({ text: `${i + 1}. ${exp.role.toUpperCase()} @ ${exp.company}, ${exp.location || ""} (${exp.period})`, type: "info" });
+          response.push({ text: `   - ${exp.description || exp.desc}`, type: "text" });
+        });
         break;
-      case "education":
+      }
+      case "education": {
+        const list = education.length > 0 ? education : [
+          { degree: "Master of Computer Applications (MCA)", institution: "JSPM Narhe Technical Campus, Pune", period: "2023 - 2025", grade: "8.03 CGPA" },
+          { degree: "Bachelor of Computer Applications (BCA)", institution: "CMCS College Nashik", period: "2019 - 2022", grade: "6.67 CGPA" }
+        ];
         response = [
           { text: "ACADEMIC DATABASE:", type: "title" },
-          { text: "-----------------------------------------", type: "system" },
-          { text: "  * MCA (Master of Computer Applications) | JSPM Narhe Technical Campus, Pune", type: "info" },
-          { text: "    - Year: 2023 - 2025 | CGPA: 8.03", type: "text" },
-          { text: "  * BCA (Bachelor of Computer Applications) | CMCS College Nashik", type: "info" },
-          { text: "    - Year: 2019 - 2022 | CGPA: 6.67", type: "text" }
+          { text: "-----------------------------------------", type: "system" }
         ];
+        list.forEach((edu) => {
+          response.push({ text: `  * ${edu.degree} | ${edu.institution}`, type: "info" });
+          response.push({ text: `    - Year: ${edu.period} | Grade: ${edu.grade}`, type: "text" });
+        });
         break;
-      case "contact":
+      }
+      case "contact": {
+        const email = profile?.email || "devaapatil330@gmail.com";
+        const phone = profile?.phone || "+91 9518331190";
+        const github = profile?.github_url || "github.com/Devanandfarkade";
+        const linkedin = profile?.linkedin_url || "linkedin.com/in/devanandfarkade";
         response = [
           { text: "SECURE TRANSMISSION ENDPOINTS:", type: "title" },
-          { text: "  Email:    devaapatil330@gmail.com", type: "info" },
-          { text: "  Phone:    +91 9518331190", type: "info" },
-          { text: "  LinkedIn: linkedin.com/in/devanandfarkade", type: "info" },
-          { text: "  GitHub:   github.com/Devanandfarkade", type: "info" }
+          { text: `  Email:    ${email}`, type: "info" },
+          { text: `  Phone:    ${phone}`, type: "info" },
+          { text: `  LinkedIn: ${linkedin}`, type: "info" },
+          { text: `  GitHub:   ${github}`, type: "info" }
         ];
         break;
+      }
       case "clear":
         setHistory([]);
         return;

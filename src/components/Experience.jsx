@@ -1,12 +1,13 @@
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import { Briefcase, Calendar, MapPin, ArrowRight, Server } from "lucide-react";
 import SectionTitle from "./SectionTitle";
 import ExperienceScene from "./3D/ExperienceScene";
 import ViewportCanvas from "./ViewportCanvas";
 import { useScrollIndicator, ScrollIndicator } from "./ScrollIndicator";
+import { api } from "../services/api";
 
-const experiences = [
+const fallbackExperiences = [
   {
     id: 1,
     role: "Full Stack Developer",
@@ -105,8 +106,38 @@ function ExpTimelineCard({ exp, index }) {
 }
 
 export default function Experience() {
+  const [experienceList, setExperienceList] = useState([]);
+  const [loading, setLoading] = useState(true);
   const scrollRef = useRef(null);
   const showIndicator = useScrollIndicator(scrollRef);
+
+  useEffect(() => {
+    api.getExperience()
+      .then((data) => {
+        if (data && data.length > 0) {
+          const mapped = data.map((exp) => ({
+            id: exp.id,
+            role: exp.role,
+            company: exp.company,
+            location: exp.location,
+            period: exp.period,
+            type: exp.type,
+            color: exp.color_hex || "#39ff14",
+            desc: exp.description,
+            points: exp.points || [],
+            tech: exp.tech || []
+          }));
+          setExperienceList(mapped);
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Failed to load experience details:", err);
+        setLoading(false);
+      });
+  }, []);
+
+  const displayExperiences = experienceList.length > 0 ? experienceList : fallbackExperiences;
 
   return (
     <section id="experience" className="relative lg:h-screen lg:max-h-screen lg:min-h-[600px] flex items-center py-12 lg:py-0 bg-surface/5 overflow-hidden hacker-grid">
@@ -129,7 +160,7 @@ export default function Experience() {
           {/* Experience list (Right Column - matching height) */}
           <div className="cyber-card p-6 lg:p-8 rounded-3xl flex flex-col justify-between max-h-[60vh] lg:max-h-[72vh] relative">
             <div ref={scrollRef} className="flex-1 overflow-y-auto pr-3 cyber-scrollbar space-y-3.5">
-              {experiences.map((exp, i) => (
+              {displayExperiences.map((exp, i) => (
                 <ExpTimelineCard key={exp.id} exp={exp} index={i} />
               ))}
             </div>

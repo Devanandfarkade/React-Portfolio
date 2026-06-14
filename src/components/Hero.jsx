@@ -11,8 +11,9 @@ import {
 import DotField from "./DotField";
 import Scene3D from "./3D/Scene3D";
 import DecryptedText from "./DecryptedText";
+import { api } from "../services/api";
 
-const roles = [
+const fallbackRoles = [
   "MERN Stack Developer",
   "Frontend Engineer",
   "React Specialist",
@@ -20,12 +21,13 @@ const roles = [
   "Full Stack Builder",
 ];
 
-function TypingText({ texts, speed = 80, pause = 1800 }) {
+function TypingText({ texts = [], speed = 80, pause = 1800 }) {
   const [display, setDisplay] = useState("");
   const [idx, setIdx] = useState(0);
   const [typing, setTyping] = useState(true);
 
   useEffect(() => {
+    if (!texts || texts.length === 0) return;
     let timeout;
     const current = texts[idx];
     if (typing) {
@@ -48,6 +50,8 @@ function TypingText({ texts, speed = 80, pause = 1800 }) {
     return () => clearTimeout(timeout);
   }, [display, typing, idx, texts, speed, pause]);
 
+  if (!texts || texts.length === 0) return null;
+
   return (
     <span className="gradient-text">
       {display}
@@ -63,7 +67,7 @@ const socials = [
   { icon: Mail, href: "mailto:devaapatil330@gmail.com", label: "Email" },
 ];
 
-const stats = [
+const fallbackStats = [
   { value: "2+", label: "Years Exp." },
   { value: "20+", label: "Projects" },
   { value: "10+", label: "Clients" },
@@ -72,10 +76,27 @@ const stats = [
 
 export default function Hero() {
   const [isMobile, setIsMobile] = useState(false);
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setIsMobile(window.innerWidth < 768);
+
+    api.getProfile()
+      .then((data) => {
+        setProfile(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Failed to load profile settings:", err);
+        setLoading(false);
+      });
   }, []);
+
+  const displayRoles = profile?.roles && profile.roles.length > 0 ? profile.roles : fallbackRoles;
+  const displayStats = profile?.stats && profile.stats.length > 0 ? profile.stats : fallbackStats;
+  const devName = profile?.name ? profile.name.split(" ")[0] : "Devanand";
+  const bioText = profile?.about_text || "I craft fast, accessible, and visually stunning web applications using the MERN stack. Passionate about pixel-perfect UIs and scalable architectures.";
 
   return (
     <section
@@ -140,7 +161,7 @@ export default function Hero() {
             className="font-syne font-bold text-5xl sm:text-6xl lg:text-7xl xl:text-8xl leading-[1.05] mb-4"
           >
             Hi, I'm{" "}
-            <span className="gradient-text-cyber block mt-1">Devanand</span>
+            <span className="gradient-text-cyber block mt-1">{devName}</span>
           </motion.h1>
 
           {/* Typing role */}
@@ -150,7 +171,7 @@ export default function Hero() {
             transition={{ duration: 0.6, delay: 0.3 }}
             className="font-syne text-xl sm:text-2xl lg:text-3xl font-semibold mb-6 h-10"
           >
-            <TypingText texts={roles} />
+            <TypingText texts={displayRoles} />
           </motion.div>
 
           {/* Description with DecryptedText - SMOOTH SEQUENTIAL */}
@@ -160,18 +181,20 @@ export default function Hero() {
             transition={{ duration: 0.6, delay: 0.45 }}
             className="font-dm text-text-secondary text-base sm:text-lg leading-relaxed mb-10 max-w-xl"
           >
-            <DecryptedText
-              text="I craft fast, accessible, and visually stunning web applications using the MERN stack. Passionate about pixel-perfect UIs and scalable architectures."
-              speed={80}
-              sequential={true}
-              revealDirection="start"
-              useOriginalCharsOnly={false}
-              animateOn="view"
-              className="text-text-secondary"
-              parentClassName="inline-block"
-              encryptedClassName="text-purple-400/40"
-              characters="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+[]{}|;:,.<>?"
-            />
+            {!loading && (
+              <DecryptedText
+                text={bioText}
+                speed={80}
+                sequential={true}
+                revealDirection="start"
+                useOriginalCharsOnly={false}
+                animateOn="view"
+                className="text-text-secondary"
+                parentClassName="inline-block"
+                encryptedClassName="text-purple-400/40"
+                characters="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+[]{}|;:,.<>?"
+              />
+            )}
           </motion.div>
 
           {/* CTA Buttons */}
@@ -198,8 +221,6 @@ export default function Hero() {
               Hire Me
             </a>
           </motion.div>
-
-          {/* Socials */}
         </div>
 
         {/* Stats row */}
@@ -209,7 +230,7 @@ export default function Hero() {
           transition={{ duration: 0.7, delay: 0.9 }}
           className="bottom-28 mt-1 left-6 lg:left-12 flex gap-8"
         >
-          {stats.map(({ value, label }) => (
+          {displayStats.map(({ value, label }) => (
             <div key={label} className="text-center">
               <div className="font-syne font-bold text-2xl gradient-text">
                 {value}

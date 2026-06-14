@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import {
   Mail,
@@ -13,8 +13,9 @@ import {
   Eye,
 } from "lucide-react";
 import SectionTitle from "./SectionTitle";
+import { api } from "../services/api";
 
-const contactInfo = [
+const fallbackContactInfo = [
   {
     icon: Mail,
     label: "Email",
@@ -38,7 +39,7 @@ const contactInfo = [
   },
 ];
 
-const socials = [
+const fallbackSocials = [
   {
     icon: Github,
     label: "GitHub",
@@ -93,6 +94,7 @@ function InputField({
 export default function Contact() {
   const formRef = useRef(null);
   const inView = useInView(formRef, { once: true, margin: "-60px" });
+  const [profile, setProfile] = useState(null);
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -100,6 +102,55 @@ export default function Contact() {
     message: "",
   });
   const [status, setStatus] = useState("idle"); // idle | loading | success | error
+
+  useEffect(() => {
+    api.getProfile()
+      .then((data) => {
+        setProfile(data);
+      })
+      .catch((err) => {
+        console.error("Failed to load contact settings:", err);
+      });
+  }, []);
+
+  const contactInfo = [
+    {
+      icon: Mail,
+      label: "Email",
+      value: profile?.email || "devaapatil330@gmail.com",
+      href: profile?.email ? `mailto:${profile.email}` : "mailto:devaapatil330@gmail.com",
+      color: "#00e5ff",
+    },
+    {
+      icon: Phone,
+      label: "Phone",
+      value: profile?.phone || "+91 9518331190",
+      href: profile?.phone ? `tel:${profile.phone.replace(/\s+/g, '')}` : "tel:+919518331190",
+      color: "#39ff14",
+    },
+    {
+      icon: MapPin,
+      label: "Location",
+      value: profile?.location || "Pune, Maharashtra, India",
+      href: null,
+      color: "#ffb700",
+    },
+  ];
+
+  const socials = [
+    {
+      icon: Github,
+      label: "GitHub",
+      href: profile?.github_url || "https://github.com/Devanandfarkade",
+      color: "#ffffff",
+    },
+    {
+      icon: Linkedin,
+      label: "LinkedIn",
+      href: profile?.linkedin_url || "https://linkedin.com/in/devanandfarkade",
+      color: "#0077b5",
+    },
+  ];
 
   const handleChange = (e) =>
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -110,14 +161,12 @@ export default function Contact() {
     setStatus("loading");
 
     try {
-      // Simulated secure API transmission pipeline (will integrate with backend later)
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      console.log("Transmission Packet Routed Successfully:", form);
+      await api.sendMessage(form);
       setStatus("success");
       setForm({ name: "", email: "", subject: "", message: "" });
       setTimeout(() => setStatus("idle"), 4000);
     } catch (error) {
-      console.error(error);
+      console.error("Transmission error:", error);
       setStatus("error");
       setTimeout(() => setStatus("idle"), 4000);
     }

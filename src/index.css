@@ -338,3 +338,7 @@ input, textarea, select, input *, textarea *, select * {
   cursor: auto !important;
 }
 
+body.admin-route, body.admin-route * {
+  cursor: auto !important;
+}
+

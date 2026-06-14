@@ -18,10 +18,13 @@ export default function CustomCursor() {
     };
 
     function animate() {
+      const isAdminRoute = window.location.hash.startsWith("#admin");
+      
       // 1. Move custom-cursor dot instantly using hardware-accelerated translate3d (gentle scale=1.5 on hover)
       if (dot) {
         dot.style.transform = `translate3d(${posRef.current.x - 4}px, ${posRef.current.y - 4}px, 0) scale(${isHovered.current ? 1.5 : 1})`;
-        dot.style.opacity = isOverInput.current ? "0" : "1";
+        dot.style.opacity = (isOverInput.current || isAdminRoute) ? "0" : "1";
+        dot.style.display = isAdminRoute ? "none" : "block";
       }
       
       // 2. Smoothly interpolate follower position and scale up gently to 1.2 on hover
@@ -30,7 +33,8 @@ export default function CustomCursor() {
       
       if (follower) {
         follower.style.transform = `translate3d(${followerPos.current.x - 14}px, ${followerPos.current.y - 14}px, 0) scale(${isHovered.current ? 1.2 : 1})`;
-        follower.style.opacity = isOverInput.current ? "0" : "1";
+        follower.style.opacity = (isOverInput.current || isAdminRoute) ? "0" : "1";
+        follower.style.display = isAdminRoute ? "none" : "block";
       }
       
       rafRef.current = requestAnimationFrame(animate);
@@ -63,16 +67,28 @@ export default function CustomCursor() {
       }
     };
 
+    const updateBodyCursor = () => {
+      if (window.location.hash.startsWith("#admin")) {
+        document.body.classList.add("admin-route");
+      } else {
+        document.body.classList.remove("admin-route");
+      }
+    };
+
     window.addEventListener("mousemove", onMove, { passive: true });
     window.addEventListener("mouseover", onMouseOver, { passive: true });
     window.addEventListener("mouseout", onMouseOut, { passive: true });
+    window.addEventListener("hashchange", updateBodyCursor);
     
+    updateBodyCursor();
     rafRef.current = requestAnimationFrame(animate);
 
     return () => {
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mouseover", onMouseOver);
       window.removeEventListener("mouseout", onMouseOut);
+      window.removeEventListener("hashchange", updateBodyCursor);
+      document.body.classList.remove("admin-route");
       cancelAnimationFrame(rafRef.current);
     };
   }, []);

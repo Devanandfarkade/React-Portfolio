@@ -1,5 +1,7 @@
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Github, Linkedin, Mail, Shield, ArrowUp, Download } from "lucide-react";
+import { api } from "../services/api";
 
 const links = [
   { label: "About", href: "#about" },
@@ -21,6 +23,29 @@ const socials = [
 ];
 
 export default function Footer() {
+  const [profile, setProfile] = useState(null);
+
+  useEffect(() => {
+    api.getProfile()
+      .then((data) => {
+        setProfile(data);
+      })
+      .catch((err) => {
+        console.error("Footer failed to load profile settings:", err);
+      });
+  }, []);
+
+  const resumeUrl = profile?.resume_url || "https://www.overleaf.com/project/69f4ccd2a77545648f1565de";
+  const email = profile?.email || "devaapatil330@gmail.com";
+  const githubUrl = profile?.github_url || "https://github.com/Devanandfarkade";
+  const linkedinUrl = profile?.linkedin_url || "https://linkedin.com/in/devanandfarkade";
+
+  const displaySocials = [
+    { icon: Github, href: githubUrl, label: "GitHub" },
+    { icon: Linkedin, href: linkedinUrl, label: "LinkedIn" },
+    { icon: Mail, href: `mailto:${email}`, label: "Email" },
+  ];
+
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
   return (
@@ -42,7 +67,7 @@ export default function Footer() {
               Full Stack Developer crafting performant, scalable, and secure digital architectures with React.js, Node.js, and Java.
             </p>
             <div className="flex gap-2.5 pt-2">
-              {socials.map(({ icon: Icon, href, label }) => (
+              {displaySocials.map(({ icon: Icon, href, label }) => (
                 <motion.a
                   key={label}
                   href={href}
@@ -76,7 +101,7 @@ export default function Footer() {
               ))}
               <li>
                 <a
-                  href="https://www.overleaf.com/project/69f4ccd2a77545648f1565de"
+                  href={resumeUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-accent hover:underline flex items-center gap-1"

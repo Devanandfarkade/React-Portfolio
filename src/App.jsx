@@ -12,6 +12,8 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 import CustomCursor from './components/CustomCursor';
 import EmailTemplate from './components/EmailTemplate';
+import AdminLogin from './components/AdminLogin';
+import AdminDashboard from './components/AdminDashboard';
 
 export default function App() {
   const [hash, setHash] = useState(window.location.hash);
@@ -26,6 +28,14 @@ export default function App() {
 
   if (hash === '#email-template') {
     return <EmailTemplate />;
+  }
+
+  if (hash === '#admin-login') {
+    return <AdminLogin />;
+  }
+
+  if (hash === '#admin-dashboard') {
+    return <AdminDashboard />;
   }
 
   return (

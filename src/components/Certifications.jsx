@@ -1,12 +1,13 @@
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Award, ExternalLink, Calendar, CheckCircle } from 'lucide-react';
 import SectionTitle from './SectionTitle';
 import CertsScene from './3D/CertsScene';
 import ViewportCanvas from './ViewportCanvas';
 import { useScrollIndicator, ScrollIndicator } from './ScrollIndicator';
+import { api } from '../services/api';
 
-const certs = [
+const fallbackCerts = [
   { id: 1, title: 'Java Full Stack Development', issuer: 'QSpiders Wakad, Pune', date: 'Mar 2023 - Sep 2023', credId: 'QS-JFS-2023', link: 'https://qspiders.com', color: '#39ff14', icon: '☕', skills: ['Java', 'SQL', 'Web Technologies', 'J2EE'] },
   { id: 2, title: 'Java Full Stack Development', issuer: 'Symbiosis (Capgemini), Pune', date: 'Jun 2024 - Aug 2024', credId: 'SYM-CAP-24', link: 'https://capgemini.com', color: '#00e5ff', icon: '💻', skills: ['Enterprise Java', 'Spring Boot', 'Angular', 'Agile'] },
   { id: 3, title: "Technology's Impact on Business", issuer: 'HP LIFE Online Course', date: 'Oct 2022 - Nov 2022', credId: 'HP-LIFE-2022', link: 'https://life-global.org', color: '#ffb700', icon: '📊', skills: ['Business IT', 'Tech Strategy', 'Analytics'] },
@@ -19,15 +20,18 @@ function CertCard({ cert, index }) {
   return (
     <motion.div ref={ref} initial={{ opacity: 0, y: 15 }} animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.45, delay: index * 0.05 }}
-      className="group relative p-4 rounded-xl bg-surface/50 border border-accent-2/15 hover:border-accent/40 hover:bg-surface-2/40 transition-all duration-300 overflow-hidden flex flex-col justify-between">
+      className="group relative p-4 rounded-xl bg-surface/50 border border-accent-2/15 hover:border-accent/40 hover:bg-surface-2/40 transition-all duration-300 overflow-hidden flex flex-col justify-between"
+      style={{ borderColor: `${cert.color}20` }}>
       <div className="absolute top-0 left-0 right-0 h-0.5 opacity-60" style={{ background: `linear-gradient(90deg, ${cert.color}, transparent)` }} />
       
       <div>
         <div className="flex items-start justify-between mb-2.5 border-b border-accent-2/10 pb-2">
           <div className="w-8 h-8 rounded-lg flex items-center justify-center text-lg flex-shrink-0" style={{ backgroundColor: cert.color + '15' }}>{cert.icon}</div>
-          <a href={cert.link} target="_blank" rel="noopener noreferrer" className="opacity-0 group-hover:opacity-100 w-6 h-6 flex items-center justify-center rounded bg-surface border border-accent-2/20 hover:border-accent text-text-secondary hover:text-accent transition-all duration-200">
-            <ExternalLink size={10} />
-          </a>
+          {cert.link && (
+            <a href={cert.link} target="_blank" rel="noopener noreferrer" className="opacity-0 group-hover:opacity-100 w-6 h-6 flex items-center justify-center rounded bg-surface border border-accent-2/20 hover:border-accent text-text-secondary hover:text-accent transition-all duration-200">
+              <ExternalLink size={10} />
+            </a>
+          )}
         </div>
         <h3 className="font-mono-hacker font-bold text-xs text-text-primary leading-snug group-hover:text-accent transition-colors duration-300 tracking-wider">{cert.title}</h3>
         <div className="flex items-center gap-1.5 mt-1.5 mb-1.5">
@@ -52,8 +56,37 @@ function CertCard({ cert, index }) {
 }
 
 export default function Certifications() {
+  const [certsList, setCertsList] = useState([]);
+  const [loading, setLoading] = useState(true);
   const scrollRef = useRef(null);
   const showIndicator = useScrollIndicator(scrollRef);
+
+  useEffect(() => {
+    api.getCerts()
+      .then((data) => {
+        if (data && data.length > 0) {
+          const mapped = data.map((cert) => ({
+            id: cert.id,
+            title: cert.title,
+            issuer: cert.issuer,
+            date: cert.date,
+            credId: cert.credential_id,
+            link: cert.link,
+            color: cert.color_hex || '#39ff14',
+            icon: cert.icon_emoji || '🎓',
+            skills: cert.skills || []
+          }));
+          setCertsList(mapped);
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Failed to load credentials ledger:", err);
+        setLoading(false);
+      });
+  }, []);
+
+  const displayCerts = certsList.length > 0 ? certsList : fallbackCerts;
 
   return (
     <section id="certifications" className="relative lg:h-screen lg:max-h-screen lg:min-h-[600px] flex items-center py-12 lg:py-0 bg-surface/5 overflow-hidden hacker-grid">
@@ -77,7 +110,7 @@ export default function Certifications() {
           <div className="cyber-card p-6 lg:p-8 rounded-3xl flex flex-col justify-between max-h-[60vh] lg:max-h-[72vh] relative">
             <div ref={scrollRef} className="flex-1 overflow-y-auto pr-3 cyber-scrollbar">
               <div className="grid sm:grid-cols-2 gap-3.5">
-                {certs.map((cert, i) => <CertCard key={cert.id} cert={cert} index={i} />)}
+                {displayCerts.map((cert, i) => <CertCard key={cert.id} cert={cert} index={i} />)}
               </div>
             </div>
 

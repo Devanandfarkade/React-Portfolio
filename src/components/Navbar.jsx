@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Download } from "lucide-react";
+import { api } from "../services/api";
 
 const navLinks = [
   { label: "Home", href: "#hero" },
@@ -17,6 +18,19 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [active, setActive] = useState("hero");
+  const [resumeUrl, setResumeUrl] = useState("https://www.overleaf.com/project/69f4ccd2a77545648f1565de");
+
+  useEffect(() => {
+    api.getProfile()
+      .then((data) => {
+        if (data && data.resume_url) {
+          setResumeUrl(data.resume_url);
+        }
+      })
+      .catch((err) => {
+        console.error("Navbar failed to load profile settings:", err);
+      });
+  }, []);
 
   useEffect(() => {
     const onScroll = () => {
@@ -101,7 +115,7 @@ export default function Navbar() {
           {/* CTA + Mobile Toggle */}
           <div className="flex items-center gap-3">
             <motion.a
-              href="https://www.overleaf.com/project/69f4ccd2a77545648f1565de"
+              href={resumeUrl}
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ scale: 1.03 }}
@@ -156,7 +170,7 @@ export default function Navbar() {
                 className="pt-2"
               >
                 <a
-                  href="https://www.overleaf.com/project/69f4ccd2a77545648f1565de"
+                  href={resumeUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center gap-2 px-4 py-3 bg-accent text-black font-mono-hacker font-bold text-xs rounded"
