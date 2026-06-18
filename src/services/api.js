@@ -35,4 +35,17 @@ export const api = {
     method: "POST",
     body: JSON.stringify({ username, password }),
   }),
+  forgotPassword: (username, email, newPassword) => fetchAPI("/api/auth/forgot-password", {
+    method: "POST",
+    body: JSON.stringify({ username, email, newPassword }),
+  }),
+  register: (username, email, password) => fetchAPI("/api/auth/register", {
+    method: "POST",
+    body: JSON.stringify({ username, email, password }),
+  }),
+  updateAccount: (payload, token) => fetchAPI("/api/auth/update", {
+    method: "PUT",
+    headers: { "Authorization": `Bearer ${token}` },
+    body: JSON.stringify(payload),
+  }),
 };

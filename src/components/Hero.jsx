@@ -138,14 +138,14 @@ export default function Hero() {
       <div className="absolute inset-0 z-[3] bg-gradient-to-r from-bg via-bg/80 to-transparent pointer-events-none" />
 
       {/* Content */}
-      <div className="absolute left-20 top-0 z-[4] flex flex-col justify-left min-h-screen mx-auto px-0 lg:px-12 py-24">
+      <div className="absolute left-10 lg:left-20 top-0 z-[4] flex flex-col justify-center min-h-screen mx-auto px-0 lg:px-12 py-12">
         <div className="max-w-2xl">
           {/* Badge */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/10 border border-purple-500/30 rounded-full mb-8"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/10 border border-purple-500/30 rounded-full mb-6"
           >
             <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
             <span className="font-dm text-sm text-text-secondary">
@@ -158,7 +158,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.1 }}
-            className="font-syne font-bold text-5xl sm:text-6xl lg:text-7xl xl:text-8xl leading-[1.05] mb-4"
+            className="font-syne font-bold text-5xl sm:text-6xl lg:text-7xl xl:text-8xl leading-[1.05] mb-3"
           >
             Hi, I'm{" "}
             <span className="gradient-text-cyber block mt-1">{devName}</span>
@@ -169,7 +169,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="font-syne text-xl sm:text-2xl lg:text-3xl font-semibold mb-6 h-10"
+            className="font-syne text-xl sm:text-2xl lg:text-3xl font-semibold mb-4 h-10"
           >
             <TypingText texts={displayRoles} />
           </motion.div>
@@ -179,19 +179,19 @@ export default function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.45 }}
-            className="font-dm text-text-secondary text-base sm:text-lg leading-relaxed mb-10 max-w-xl"
+            className="font-mono-hacker text-text-secondary text-sm sm:text-base leading-relaxed mb-6 max-w-xl min-h-[96px] sm:min-h-[80px] md:min-h-[72px]"
           >
             {!loading && (
               <DecryptedText
                 text={bioText}
-                speed={80}
+                speed={35}
                 sequential={true}
                 revealDirection="start"
                 useOriginalCharsOnly={false}
                 animateOn="view"
-                className="text-text-secondary"
-                parentClassName="inline-block"
-                encryptedClassName="text-purple-400/40"
+                className="text-text-secondary font-mono-hacker"
+                parentClassName="inline-block font-mono-hacker"
+                encryptedClassName="text-purple-400/40 font-mono-hacker"
                 characters="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+[]{}|;:,.<>?"
               />
             )}

@@ -133,8 +133,10 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="border-t border-accent-2/15 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="font-mono-hacker text-[10px] text-text-secondary/50 flex flex-wrap items-center gap-1.5 justify-center sm:justify-start">
-            <Shield size={10} className="text-accent animate-pulse" />
-            <span>Active</span>
+            <a href="#admin-login" className="flex items-center gap-1.5 hover:text-accent text-text-secondary/50 transition-colors">
+              <Shield size={10} className="text-accent animate-pulse" />
+              <span>OPERATOR_LOGIN</span>
+            </a>
             <span>·</span>
             <span>Portfolio v2.0.8</span>
             <span>·</span>

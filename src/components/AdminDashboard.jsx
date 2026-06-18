@@ -57,6 +57,7 @@ export default function AdminDashboard() {
 
   // Resume file state
   const [resumeFile, setResumeFile] = useState(null);
+  const [operatorForm, setOperatorForm] = useState({ username: "", email: "", password: "", confirmPassword: "" });
 
   // Validate authentication
   useEffect(() => {
@@ -70,6 +71,12 @@ export default function AdminDashboard() {
     }
     setToken(savedToken);
     
+    const savedUser = localStorage.getItem("admin_user");
+    if (savedUser) {
+      const user = JSON.parse(savedUser);
+      setOperatorForm({ username: user.username || "", email: user.email || "", password: "", confirmPassword: "" });
+    }
+
     // Fetch initial datasets
     fetchData(savedToken);
 
@@ -619,6 +626,36 @@ export default function AdminDashboard() {
     showSuccess("All dashboard caches and metrics synchronized.");
   };
 
+  const handleOperatorUpdate = async (e) => {
+    e.preventDefault();
+    if (operatorForm.password && operatorForm.password !== operatorForm.confirmPassword) {
+      showErr("Operator passphrases do not match!");
+      return;
+    }
+
+    setActionLoading(true);
+    try {
+      const payload = {
+        username: operatorForm.username,
+        email: operatorForm.email
+      };
+      if (operatorForm.password) {
+        payload.password = operatorForm.password;
+      }
+
+      const result = await api.updateAccount(payload, token);
+      showSuccess("Operator security profile updated successfully.");
+
+      // update local storage
+      localStorage.setItem("admin_user", JSON.stringify(result.user));
+      setOperatorForm({ ...operatorForm, password: "", confirmPassword: "" });
+    } catch (err) {
+      showErr(err.message);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-bg text-text-primary flex select-text font-mono-hacker">
       {/* Side HUD Panel */}
@@ -641,6 +678,7 @@ export default function AdminDashboard() {
               { id: "TIMELINES", label: "04_EXPERIENCE", icon: Calendar },
               { id: "CERTS", label: "05_CREDENTIALS", icon: Award },
               { id: "INBOX", label: `06_INBOX (${stats?.unread_messages || 0})`, icon: Mail, highlight: (stats?.unread_messages || 0) > 0 },
+              { id: "SECURITY", label: "07_OPERATOR_CONFIG", icon: Shield },
             ].map((t) => (
               <button
                 key={t.id}
@@ -1981,6 +2019,71 @@ export default function AdminDashboard() {
                         </div>
                       ))
                     )}
+                  </div>
+                </div>
+              )}
+
+              {/* Tab 7: Operator Config */}
+              {activeTab === "SECURITY" && (
+                <div className="space-y-6">
+                  <h3 className="text-xs font-bold text-accent tracking-widest uppercase mb-4">
+                    07.1 OPERATOR ACCOUNT CONFIGURATION
+                  </h3>
+                  
+                  <div className="bg-surface/50 border border-accent/20 rounded-3xl p-6 max-w-xl">
+                    <form onSubmit={handleOperatorUpdate} className="space-y-4 text-xs font-mono-hacker">
+                      <div>
+                        <label className="block text-[9px] uppercase text-muted mb-1 font-bold">Operator Username</label>
+                        <input
+                          type="text"
+                          value={operatorForm.username}
+                          onChange={(e) => setOperatorForm({ ...operatorForm, username: e.target.value })}
+                          required
+                          className="w-full bg-black/60 border border-accent-2/20 focus:border-accent text-white rounded-lg p-2.5 focus:outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[9px] uppercase text-muted mb-1 font-bold">Operator Email</label>
+                        <input
+                          type="email"
+                          value={operatorForm.email}
+                          onChange={(e) => setOperatorForm({ ...operatorForm, email: e.target.value })}
+                          required
+                          className="w-full bg-black/60 border border-accent-2/20 focus:border-accent text-white rounded-lg p-2.5 focus:outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[9px] uppercase text-muted mb-1 font-bold">New Passphrase (Leave blank to keep current)</label>
+                        <input
+                          type="password"
+                          value={operatorForm.password}
+                          onChange={(e) => setOperatorForm({ ...operatorForm, password: e.target.value })}
+                          placeholder="••••••••••••"
+                          className="w-full bg-black/60 border border-accent-2/20 focus:border-accent text-white rounded-lg p-2.5 focus:outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[9px] uppercase text-muted mb-1 font-bold">Confirm New Passphrase</label>
+                        <input
+                          type="password"
+                          value={operatorForm.confirmPassword}
+                          onChange={(e) => setOperatorForm({ ...operatorForm, confirmPassword: e.target.value })}
+                          placeholder="••••••••••••"
+                          className="w-full bg-black/60 border border-accent-2/20 focus:border-accent text-white rounded-lg p-2.5 focus:outline-none"
+                        />
+                      </div>
+
+                      <button
+                        type="submit"
+                        disabled={actionLoading}
+                        className="btn-hacker px-6 py-2.5 rounded-lg text-xs uppercase font-bold tracking-wider hover:-translate-y-0.5 transition-all"
+                      >
+                        {actionLoading ? "SAVING..." : "COMMIT_CHANGES"}
+                      </button>
+                    </form>
                   </div>
                 </div>
               )}

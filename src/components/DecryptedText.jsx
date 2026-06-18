@@ -14,6 +14,7 @@ export default function DecryptedText({
     encryptedClassName = '',
     animateOn = 'hover',
     clickMode = 'once',
+    charactersPerTick,
     ...props
 }) {
     const [displayText, setDisplayText] = useState(text);
@@ -27,6 +28,15 @@ export default function DecryptedText({
     const orderRef = useRef([]);
     const pointerRef = useRef(0);
     const intervalRef = useRef(null);
+
+    const resolvedCharactersPerTick = useMemo(() => {
+        if (charactersPerTick !== undefined) return charactersPerTick;
+        if (sequential) {
+            const ticks = 30; // target number of ticks to complete the animation
+            return Math.max(1, Math.ceil(text.length / ticks));
+        }
+        return 1;
+    }, [charactersPerTick, text.length, sequential]);
 
     const availableChars = useMemo(() => {
         return useOriginalCharsOnly
@@ -156,14 +166,22 @@ export default function DecryptedText({
             }
         };
 
+        const getNextIndices = (revealedSet, count) => {
+            const newRevealed = new Set(revealedSet);
+            for (let c = 0; c < count; c++) {
+                if (newRevealed.size >= text.length) break;
+                const nextIndex = getNextIndex(newRevealed);
+                newRevealed.add(nextIndex);
+            }
+            return newRevealed;
+        };
+
         intervalRef.current = setInterval(() => {
             setRevealedIndices(prevRevealed => {
                 if (sequential) {
                     if (direction === 'forward') {
                         if (prevRevealed.size < text.length) {
-                            const nextIndex = getNextIndex(prevRevealed);
-                            const newRevealed = new Set(prevRevealed);
-                            newRevealed.add(nextIndex);
+                            const newRevealed = getNextIndices(prevRevealed, resolvedCharactersPerTick);
                             setDisplayText(shuffleText(text, newRevealed));
                             return newRevealed;
                         } else {
@@ -176,9 +194,13 @@ export default function DecryptedText({
 
                     if (direction === 'reverse') {
                         if (pointerRef.current < orderRef.current.length) {
-                            const idxToRemove = orderRef.current[pointerRef.current++];
                             const newRevealed = new Set(prevRevealed);
-                            newRevealed.delete(idxToRemove);
+                            for (let c = 0; c < resolvedCharactersPerTick; c++) {
+                                if (pointerRef.current < orderRef.current.length) {
+                                    const idxToRemove = orderRef.current[pointerRef.current++];
+                                    newRevealed.delete(idxToRemove);
+                                }
+                            }
                             setDisplayText(shuffleText(text, newRevealed));
                             if (newRevealed.size === 0) {
                                 clearInterval(intervalRef.current);
@@ -241,6 +263,7 @@ export default function DecryptedText({
         direction,
         fillAllIndices,
         removeRandomIndices,
+        resolvedCharactersPerTick,
     ]);
 
     const handleClick = () => {

@@ -86,13 +86,13 @@ export default function About() {
 
         {/* Side-by-side matched heights layout: Content on Left, 3D on Right */}
         <div className="grid lg:grid-cols-2 gap-10 items-stretch mt-3">
-          
+
           {/* Content (Left Column) */}
           <div ref={contentRef} className="cyber-card p-6 lg:p-8 rounded-3xl flex flex-col justify-between max-h-[60vh] lg:max-h-[72vh] relative">
             <div ref={scrollRef} className="flex-1 overflow-y-auto pr-3 cyber-scrollbar space-y-4">
               <motion.p initial={{ opacity: 0, x: -20 }} animate={inView ? { opacity: 1, x: 0 } : {}}
                 transition={{ duration: 0.4 }} className="font-mono-hacker text-text-secondary text-sm leading-relaxed">
-                &gt; STATUS: <span className="text-accent font-semibold">{status}</span><br/>
+                &gt; STATUS: <span className="text-accent font-semibold">{status}</span><br />
                 &gt; CORE STACK: <span className="text-text-primary font-medium">{coreStack}</span>
               </motion.p>
 
@@ -131,7 +131,7 @@ export default function About() {
               <AboutScene3D height="100%" />
             </ViewportCanvas>
           </div>
-          
+
         </div>
       </div>
     </section>

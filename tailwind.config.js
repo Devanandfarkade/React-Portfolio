@@ -13,6 +13,7 @@ export default {
         "surface-2": "#180e2b",
         accent: "#a855f7",
         "accent-2": "#06b6d4",
+        "accent-3": "#ff007f",
         gold: "#f59e0b",
         muted: "#6b6880",
         "text-primary": "#f0ecff",

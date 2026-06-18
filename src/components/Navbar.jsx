@@ -126,6 +126,15 @@ export default function Navbar() {
               Resume
             </motion.a>
 
+            <motion.a
+              href="#admin-login"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              className="hidden sm:flex items-center gap-1.5 px-4 py-1.5 bg-green-500/5 border border-green-500/35 text-green-400 text-xs font-mono-hacker font-bold rounded hover:bg-green-500 hover:text-black transition-all duration-200"
+            >
+              Admin Login
+            </motion.a>
+
             <button
               onClick={() => setMenuOpen(!menuOpen)}
               className="lg:hidden p-2 text-text-secondary hover:text-accent transition-colors"
@@ -177,6 +186,21 @@ export default function Navbar() {
                 >
                   <Download size={12} />
                   DOWNLOAD RESUME
+                </a>
+              </motion.li>
+
+              <motion.li
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: (navLinks.length + 1) * 0.04 }}
+                className="pt-2"
+              >
+                <a
+                  href="#admin-login"
+                  onClick={() => setMenuOpen(false)}
+                  className="flex items-center justify-center gap-2 px-4 py-3 bg-green-500/10 border border-green-500/30 text-green-400 font-mono-hacker font-bold text-xs rounded hover:bg-green-500 hover:text-black transition-all duration-200"
+                >
+                  ADMIN LOGIN
                 </a>
               </motion.li>
             </ul>
