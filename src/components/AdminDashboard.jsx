@@ -1809,12 +1809,12 @@ export default function AdminDashboard() {
                           <div>
                             <label className="block text-[9px] uppercase text-muted mb-1 font-bold">Issue Date</label>
                             <input
-                              type="text"
+                              type="date"
                               value={certForm.date}
                               onChange={(e) => setCertForm({ ...certForm, date: e.target.value })}
                               required
-                              placeholder="Mar 2023 - Sep 2023"
                               className="w-full bg-black/60 border border-accent-2/20 text-white rounded-lg p-2.5 focus:outline-none text-center"
+                              style={{ colorScheme: 'dark' }}
                             />
                           </div>
                         </div>
@@ -1827,7 +1827,6 @@ export default function AdminDashboard() {
                             type="url"
                             value={certForm.link}
                             onChange={(e) => setCertForm({ ...certForm, link: e.target.value })}
-                            required
                             placeholder="https://..."
                             className="w-full bg-black/60 border border-accent-2/20 text-white rounded-lg p-2.5 focus:outline-none"
                           />

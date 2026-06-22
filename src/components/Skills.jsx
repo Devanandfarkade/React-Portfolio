@@ -20,22 +20,7 @@ const getIconComponent = (iconName) => {
   return FaIcons.FaServer; // Fallback
 };
 
-const fallbackSkills = [
-  { name: "React.js", icon: SiIcons.SiReact, level: 90, color: "#61dafb", cat: "FRONTEND" },
-  { name: "JavaScript", icon: SiIcons.SiJavascript, level: 88, color: "#f7df1e", cat: "FRONTEND" },
-  { name: "Tailwind CSS", icon: SiIcons.SiTailwindcss, level: 92, color: "#06b6d4", cat: "FRONTEND" },
-  { name: "HTML5", icon: SiIcons.SiHtml5, level: 95, color: "#e34f26", cat: "FRONTEND" },
-  { name: "CSS3", icon: SiIcons.SiCss, level: 90, color: "#1572b6", cat: "FRONTEND" },
-  { name: "Node.js", icon: SiIcons.SiNodedotjs, level: 85, color: "#339933", cat: "BACKEND" },
-  { name: "Express.js", icon: SiIcons.SiExpress, level: 82, color: "#ffffff", cat: "BACKEND" },
-  { name: "Java", icon: FaIcons.FaJava, level: 86, color: "#007396", cat: "BACKEND" },
-  { name: "Spring Boot", icon: FaIcons.FaServer, level: 78, color: "#6db33f", cat: "BACKEND" },
-  { name: "PostgreSQL", icon: SiIcons.SiPostgresql, level: 80, color: "#336791", cat: "BACKEND" },
-  { name: "MongoDB", icon: SiIcons.SiMongodb, level: 80, color: "#47a248", cat: "BACKEND" },
-  { name: "Git", icon: SiIcons.SiGit, level: 88, color: "#f05032", cat: "TOOLS" },
-  { name: "GitHub", icon: SiIcons.SiGithub, level: 90, color: "#ffffff", cat: "TOOLS" },
-  { name: "REST APIs", icon: FaIcons.FaServer, level: 87, color: "#00e5ff", cat: "TOOLS" },
-];
+
 
 function SkillBar({ skill, delay }) {
   const ref = useRef(null);
@@ -67,7 +52,9 @@ function SkillBar({ skill, delay }) {
   );
 }
 
-export default function Skills() {
+import Skeleton from '@mui/material/Skeleton';
+
+export default function Skills({ showSkeleton }) {
   const [activeTab, setActiveTab] = useState("ALL");
   const [skillsList, setSkillsList] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -95,7 +82,8 @@ export default function Skills() {
       });
   }, []);
 
-  const displaySkills = skillsList.length > 0 ? skillsList : fallbackSkills;
+  const isLoading = loading || showSkeleton;
+  const displaySkills = skillsList || [];
   const filtered = activeTab === "ALL" ? displaySkills : displaySkills.filter((s) => s.cat === activeTab);
 
   return (
@@ -111,9 +99,13 @@ export default function Skills() {
           
           {/* 3D laptop scene (Left Column) */}
           <div className="relative w-full h-[300px] lg:h-auto rounded-3xl overflow-hidden border border-accent/20 bg-surface/20">
-            <ViewportCanvas title="3D_SKILLS_MODEL">
-              <SkillsScene />
-            </ViewportCanvas>
+            {isLoading ? (
+              <Skeleton variant="rectangular" width="100%" height="100%" className="bg-surface-2/40" />
+            ) : (
+              <ViewportCanvas title="3D_SKILLS_MODEL">
+                <SkillsScene />
+              </ViewportCanvas>
+            )}
           </div>
 
           {/* Skills (Right Column) */}
@@ -131,9 +123,13 @@ export default function Skills() {
               <AnimatePresence mode="wait">
                 <motion.div key={activeTab} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                   transition={{ duration: 0.2 }} className="grid sm:grid-cols-2 gap-3.5">
-                  {filtered.map((skill, i) => (
-                    <SkillBar key={skill.name} skill={skill} delay={i * 0.03} />
-                  ))}
+                  {isLoading ? (
+                    [1,2,3,4,5,6].map(i => <Skeleton key={i} variant="rounded" height={60} className="bg-surface-2/40 rounded-xl w-full" />)
+                  ) : (
+                    filtered.map((skill, i) => (
+                      <SkillBar key={skill.name} skill={skill} delay={i * 0.03} />
+                    ))
+                  )}
                 </motion.div>
               </AnimatePresence>
             </div>
@@ -144,9 +140,13 @@ export default function Skills() {
             <div className="border-t border-accent-2/20 pt-5 mt-4">
               <p className="font-mono-hacker text-accent text-xs mb-3 tracking-widest uppercase">&gt; OTHER SKILLS</p>
               <div className="flex flex-wrap gap-1.5">
-                {["Problem Solving", "Analytical Thinking", "Team Collaboration", "Communication", "Adaptability", "Quick Learner"].map((tool) => (
-                  <span key={tool} className="font-mono-hacker text-[10px] text-text-secondary px-2.5 py-1 rounded bg-surface border border-accent-2/15 hover:border-accent/40 hover:text-accent transition-all duration-200 cursor-default">{tool}</span>
-                ))}
+                {isLoading ? (
+                  [1,2,3,4].map(i => <Skeleton key={i} variant="rounded" width={80} height={24} className="bg-surface-2/40 rounded" />)
+                ) : (
+                  ["Problem Solving", "Analytical Thinking", "Team Collaboration", "Communication", "Adaptability", "Quick Learner"].map((tool) => (
+                    <span key={tool} className="font-mono-hacker text-[10px] text-text-secondary px-2.5 py-1 rounded bg-surface border border-accent-2/15 hover:border-accent/40 hover:text-accent transition-all duration-200 cursor-default">{tool}</span>
+                  ))
+                )}
               </div>
             </div>
           </div>

@@ -7,36 +7,7 @@ import ViewportCanvas from "./ViewportCanvas";
 import { useScrollIndicator, ScrollIndicator } from "./ScrollIndicator";
 import { api } from "../services/api";
 
-const fallbackEducation = [
-  {
-    id: 1, 
-    degree: "Master of Computer Applications (MCA)", 
-    institution: "JSPM Narhe Technical Campus", 
-    location: "Pune, MH, India", 
-    period: "2023 – 2025", 
-    grade: "8.03 CGPA", 
-    color: "#39ff14",
-    highlights: [
-      "Acquired expertise in Advanced Web Technologies and Cloud computing.",
-      "Developed web applications integrating React.js client layers with Node.js REST nodes.",
-      "Focused on database efficiency, object-oriented concepts, and software architecture."
-    ]
-  },
-  {
-    id: 2, 
-    degree: "Bachelor of Computer Applications (BCA)", 
-    institution: "CMCS College Nashik", 
-    location: "Nashik, MH, India", 
-    period: "2019 – 2022", 
-    grade: "6.67 CGPA", 
-    color: "#00e5ff",
-    highlights: [
-      "Studied programming fundamentals, data structures, and database management systems (DBMS).",
-      "Completed graduation with strong foundations in software engineering paradigms.",
-      "Engineered database projects utilizing relational structures and SQL queries."
-    ]
-  }
-];
+
 
 function EduCard({ edu, index }) {
   const ref = useRef(null);
@@ -81,7 +52,9 @@ function EduCard({ edu, index }) {
   );
 }
 
-export default function Education() {
+import Skeleton from '@mui/material/Skeleton';
+
+export default function Education({ showSkeleton }) {
   const [educationList, setEducationList] = useState([]);
   const [loading, setLoading] = useState(true);
   const scrollRef = useRef(null);
@@ -111,7 +84,8 @@ export default function Education() {
       });
   }, []);
 
-  const displayEducation = educationList.length > 0 ? educationList : fallbackEducation;
+  const isLoading = loading || showSkeleton;
+  const displayEducation = educationList || [];
 
   return (
     <section id="education" className="relative lg:h-screen lg:max-h-screen lg:min-h-[600px] flex items-center py-12 lg:py-0 bg-bg overflow-hidden hacker-grid">
@@ -127,9 +101,13 @@ export default function Education() {
           {/* Content (Left Column) */}
           <div className="cyber-card p-6 lg:p-8 rounded-3xl flex flex-col justify-between max-h-[60vh] lg:max-h-[72vh] relative">
             <div ref={scrollRef} className="flex-1 overflow-y-auto pr-3 cyber-scrollbar space-y-4">
-              {displayEducation.map((edu, i) => (
-                <EduCard key={edu.id} edu={edu} index={i} />
-              ))}
+              {isLoading ? (
+                [1,2].map(i => <Skeleton key={i} variant="rounded" height={150} className="bg-surface-2/40 rounded-xl w-full" />)
+              ) : (
+                displayEducation.map((edu, i) => (
+                  <EduCard key={edu.id} edu={edu} index={i} />
+                ))
+              )}
             </div>
 
             <ScrollIndicator visible={showIndicator} className="bottom-[70px]" />
@@ -140,9 +118,13 @@ export default function Education() {
 
           {/* 3D Scene (Right Column - matching height) */}
           <div className="relative w-full h-[300px] lg:h-auto rounded-3xl overflow-hidden border border-accent-2/20 bg-surface/25 flex items-stretch">
-            <ViewportCanvas title="3D_EDUCATION_MODEL">
-              <EducationScene />
-            </ViewportCanvas>
+            {isLoading ? (
+              <Skeleton variant="rectangular" width="100%" height="100%" className="bg-surface-2/40" />
+            ) : (
+              <ViewportCanvas title="3D_EDUCATION_MODEL">
+                <EducationScene />
+              </ViewportCanvas>
+            )}
           </div>
           
         </div>

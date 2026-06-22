@@ -8,32 +8,7 @@ import { useScrollIndicator, ScrollIndicator } from "./ScrollIndicator";
 import { api } from "../services/api";
 
 const filters = ["ALL", "JAVA", "DATABASE"];
-const fallbackProjects = [
-  { 
-    id: 1, 
-    title: "BANK MANAGEMENT SYSTEM", 
-    desc: "A comprehensive financial transaction ledger built to manage core banking operations. Implements user authentication, automated ledger entries, checking deposits, withdrawals, and calculations of ATM and debit card schedules.", 
-    tags: ["Java", "MySQL", "JDBC", "Database Design", "Git"], 
-    cat: "JAVA", 
-    repo: "https://github.com/Devanandfarkade", 
-    live: null,
-    color: "#39ff14", 
-    status: "STABLE",
-    featured: true 
-  },
-  { 
-    id: 2, 
-    title: "VEHICLE SERVICE CENTER", 
-    desc: "An automated billing, scheduling, and invoicing system developed from scratch. Processes diagnostic logs, tracks inventory parts consumed, aggregates labor rates, and computes customer invoices with detailed cost summaries.", 
-    tags: ["Java", "Spring Boot", "MySQL", "Spring Tool Suite 4", "REST APIs"], 
-    cat: "JAVA", 
-    repo: "https://github.com/Devanandfarkade", 
-    live: null,
-    color: "#00e5ff", 
-    status: "STABLE",
-    featured: true 
-  },
-];
+
 
 function ProjectCard({ project, index }) {
   const ref = useRef(null);
@@ -94,7 +69,9 @@ function ProjectCard({ project, index }) {
   );
 }
 
-export default function Projects() {
+import Skeleton from '@mui/material/Skeleton';
+
+export default function Projects({ showSkeleton }) {
   const [active, setActive] = useState("ALL");
   const [projectList, setProjectList] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -126,7 +103,8 @@ export default function Projects() {
       });
   }, []);
 
-  const displayProjects = projectList.length > 0 ? projectList : fallbackProjects;
+  const isLoading = loading || showSkeleton;
+  const displayProjects = projectList || [];
   
   // Custom filter logic
   const filtered = active === "ALL" 
@@ -163,9 +141,13 @@ export default function Projects() {
               <AnimatePresence mode="wait">
                 <motion.div key={active} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                   transition={{ duration: 0.2 }} className="space-y-4">
-                  {filtered.map((project, i) => (
-                    <ProjectCard key={project.id} project={project} index={i} />
-                  ))}
+                  {isLoading ? (
+                    [1,2,3].map(i => <Skeleton key={i} variant="rounded" height={150} className="bg-surface-2/40 rounded-xl w-full" />)
+                  ) : (
+                    filtered.map((project, i) => (
+                      <ProjectCard key={project.id} project={project} index={i} />
+                    ))
+                  )}
                 </motion.div>
               </AnimatePresence>
             </div>
@@ -183,9 +165,13 @@ export default function Projects() {
 
           {/* 3D Brain Point Cloud Scene (Right Column - matches height) */}
           <div className="relative w-full h-[300px] lg:h-auto rounded-3xl overflow-hidden border border-accent/20 bg-surface/25 flex items-stretch">
-            <ViewportCanvas title="3D_PROJECTS_MODEL">
-              <ProjectsScene />
-            </ViewportCanvas>
+            {isLoading ? (
+              <Skeleton variant="rectangular" width="100%" height="100%" className="bg-surface-2/40" />
+            ) : (
+              <ViewportCanvas title="3D_PROJECTS_MODEL">
+                <ProjectsScene />
+              </ViewportCanvas>
+            )}
           </div>
           
         </div>

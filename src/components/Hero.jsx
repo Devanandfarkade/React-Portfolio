@@ -13,13 +13,7 @@ import Scene3D from "./3D/Scene3D";
 import DecryptedText from "./DecryptedText";
 import { api } from "../services/api";
 
-const fallbackRoles = [
-  "MERN Stack Developer",
-  "Frontend Engineer",
-  "React Specialist",
-  "UI/UX Craftsman",
-  "Full Stack Builder",
-];
+
 
 function TypingText({ texts = [], speed = 80, pause = 1800 }) {
   const [display, setDisplay] = useState("");
@@ -67,14 +61,11 @@ const socials = [
   { icon: Mail, href: "mailto:devaapatil330@gmail.com", label: "Email" },
 ];
 
-const fallbackStats = [
-  { value: "2+", label: "Years Exp." },
-  { value: "20+", label: "Projects" },
-  { value: "10+", label: "Clients" },
-  { value: "5+", label: "Certs" },
-];
 
-export default function Hero() {
+
+import Skeleton from '@mui/material/Skeleton';
+
+export default function Hero({ showSkeleton }) {
   const [isMobile, setIsMobile] = useState(false);
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -93,8 +84,9 @@ export default function Hero() {
       });
   }, []);
 
-  const displayRoles = profile?.roles && profile.roles.length > 0 ? profile.roles : fallbackRoles;
-  const displayStats = profile?.stats && profile.stats.length > 0 ? profile.stats : fallbackStats;
+  const isLoading = loading || showSkeleton;
+  const displayRoles = profile?.roles || [];
+  const displayStats = profile?.stats || [];
   const devName = profile?.name ? profile.name.split(" ")[0] : "Devanand";
   const bioText = profile?.about_text || "I craft fast, accessible, and visually stunning web applications using the MERN stack. Passionate about pixel-perfect UIs and scalable architectures.";
 
@@ -161,7 +153,11 @@ export default function Hero() {
             className="font-syne font-bold text-5xl sm:text-6xl lg:text-7xl xl:text-8xl leading-[1.05] mb-3"
           >
             Hi, I'm{" "}
-            <span className="gradient-text-cyber block mt-1">{devName}</span>
+            {isLoading ? (
+              <Skeleton variant="text" width={400} className="bg-surface-2/40 mt-1 block h-[80px]" />
+            ) : (
+              <span className="gradient-text-cyber block mt-1">{devName}</span>
+            )}
           </motion.h1>
 
           {/* Typing role */}
@@ -171,7 +167,11 @@ export default function Hero() {
             transition={{ duration: 0.6, delay: 0.3 }}
             className="font-syne text-xl sm:text-2xl lg:text-3xl font-semibold mb-4 h-10"
           >
-            <TypingText texts={displayRoles} />
+            {isLoading ? (
+               <Skeleton variant="text" width={250} className="bg-surface-2/40 h-[40px]" />
+            ) : (
+               <TypingText texts={displayRoles} />
+            )}
           </motion.div>
 
           {/* Description with DecryptedText - SMOOTH SEQUENTIAL */}
@@ -181,7 +181,9 @@ export default function Hero() {
             transition={{ duration: 0.6, delay: 0.45 }}
             className="font-mono-hacker text-text-secondary text-sm sm:text-base leading-relaxed mb-6 max-w-xl min-h-[96px] sm:min-h-[80px] md:min-h-[72px]"
           >
-            {!loading && (
+            {isLoading ? (
+              <Skeleton variant="rectangular" width="100%" height={80} className="bg-surface-2/40 rounded-xl" />
+            ) : (
               <DecryptedText
                 text={bioText}
                 speed={35}
@@ -230,14 +232,23 @@ export default function Hero() {
           transition={{ duration: 0.7, delay: 0.9 }}
           className="bottom-28 mt-1 left-6 lg:left-12 flex gap-8"
         >
-          {displayStats.map(({ value, label }) => (
-            <div key={label} className="text-center">
-              <div className="font-syne font-bold text-2xl gradient-text">
-                {value}
+          {isLoading ? (
+             [1, 2, 3, 4].map(i => (
+               <div key={i} className="text-center">
+                 <Skeleton variant="text" width={40} height={35} className="bg-surface-2/40 mx-auto" />
+                 <Skeleton variant="text" width={60} height={20} className="bg-surface-2/40 mx-auto mt-1" />
+               </div>
+             ))
+          ) : (
+            displayStats.map(({ value, label }) => (
+              <div key={label} className="text-center">
+                <div className="font-syne font-bold text-2xl gradient-text">
+                  {value}
+                </div>
+                <div className="font-dm text-xs text-muted mt-0.5">{label}</div>
               </div>
-              <div className="font-dm text-xs text-muted mt-0.5">{label}</div>
-            </div>
-          ))}
+            ))
+          )}
         </motion.div>
       </div>
 

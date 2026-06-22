@@ -7,56 +7,7 @@ import ViewportCanvas from "./ViewportCanvas";
 import { useScrollIndicator, ScrollIndicator } from "./ScrollIndicator";
 import { api } from "../services/api";
 
-const fallbackExperiences = [
-  {
-    id: 1,
-    role: "Full Stack Developer",
-    company: "RajYug IT Solutions",
-    location: "Pune, India",
-    period: "Dec 2025 – Present",
-    type: "Full-Time",
-    color: "#39ff14",
-    desc: "Contributing to enterprise-grade web applications using the MEAN stack and Java technologies.",
-    points: [
-      "Involved in frontend development, backend API integration, database design, and performance optimization within agile teams.",
-      "Enhanced usability, data accuracy, and automation for professional and client applications.",
-      "Developed modular REST APIs and streamlined data validation processes."
-    ],
-    tech: ["MongoDB", "Express.js", "Angular", "Node.js", "Java", "REST APIs"]
-  },
-  {
-    id: 2,
-    role: "Software Development Engineer (SDE)",
-    company: "Bluestock Fintech",
-    location: "Pune, India",
-    period: "Apr 2025 – May 2025",
-    type: "Contract",
-    color: "#00e5ff",
-    desc: "Engineered high-throughput IPO tracking applications and REST API web nodes.",
-    points: [
-      "Developed a production-level IPO web application and REST API using Django and PostgreSQL.",
-      "Created secure APIs delivering IPO data including company info, price band, dates, and status.",
-      "Coordinated with testing teams under agile methodology to minimize deployment stutters."
-    ],
-    tech: ["Django", "Python", "PostgreSQL", "REST APIs", "JavaScript", "SQL"]
-  },
-  {
-    id: 3,
-    role: "Java Developer Intern",
-    company: "Mass Technologies",
-    location: "Pune, India",
-    period: "Jan 2025 – Apr 2025",
-    type: "Internship",
-    color: "#ff007f",
-    desc: "Programmed educational and administrative systems using Java web architectures.",
-    points: [
-      "Developed an attendance system using Java, JSP, and MySQL with role-based logins and tracking features.",
-      "Refactored relational schemas to improve database query execution times.",
-      "Built simple, clean web frontends using JSP, CSS, and HTML5 templates."
-    ],
-    tech: ["Java", "JSP", "Servlets", "MySQL", "HTML5", "CSS3"]
-  }
-];
+
 
 function ExpTimelineCard({ exp, index }) {
   const ref = useRef(null);
@@ -105,7 +56,9 @@ function ExpTimelineCard({ exp, index }) {
   );
 }
 
-export default function Experience() {
+import Skeleton from '@mui/material/Skeleton';
+
+export default function Experience({ showSkeleton }) {
   const [experienceList, setExperienceList] = useState([]);
   const [loading, setLoading] = useState(true);
   const scrollRef = useRef(null);
@@ -137,7 +90,8 @@ export default function Experience() {
       });
   }, []);
 
-  const displayExperiences = experienceList.length > 0 ? experienceList : fallbackExperiences;
+  const isLoading = loading || showSkeleton;
+  const displayExperiences = experienceList || [];
 
   return (
     <section id="experience" className="relative lg:h-screen lg:max-h-screen lg:min-h-[600px] flex items-center py-12 lg:py-0 bg-surface/5 overflow-hidden hacker-grid">
@@ -152,17 +106,25 @@ export default function Experience() {
           
           {/* 3D Model Scene (Left Column) */}
           <div className="relative w-full h-[300px] lg:h-auto rounded-3xl overflow-hidden border border-accent/20 bg-surface/20">
-            <ViewportCanvas title="3D_EXPERIENCE_MODEL">
-              <ExperienceScene />
-            </ViewportCanvas>
+            {isLoading ? (
+              <Skeleton variant="rectangular" width="100%" height="100%" className="bg-surface-2/40" />
+            ) : (
+              <ViewportCanvas title="3D_EXPERIENCE_MODEL">
+                <ExperienceScene />
+              </ViewportCanvas>
+            )}
           </div>
 
           {/* Experience list (Right Column - matching height) */}
           <div className="cyber-card p-6 lg:p-8 rounded-3xl flex flex-col justify-between max-h-[60vh] lg:max-h-[72vh] relative">
             <div ref={scrollRef} className="flex-1 overflow-y-auto pr-3 cyber-scrollbar space-y-3.5">
-              {displayExperiences.map((exp, i) => (
-                <ExpTimelineCard key={exp.id} exp={exp} index={i} />
-              ))}
+              {isLoading ? (
+                [1,2,3].map(i => <Skeleton key={i} variant="rounded" height={160} className="bg-surface-2/40 rounded-xl w-full" />)
+              ) : (
+                displayExperiences.map((exp, i) => (
+                  <ExpTimelineCard key={exp.id} exp={exp} index={i} />
+                ))
+              )}
             </div>
 
             <ScrollIndicator visible={showIndicator} className="bottom-5" />

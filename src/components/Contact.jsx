@@ -15,44 +15,7 @@ import {
 import SectionTitle from "./SectionTitle";
 import { api } from "../services/api";
 
-const fallbackContactInfo = [
-  {
-    icon: Mail,
-    label: "Email",
-    value: "devaapatil330@gmail.com",
-    href: "mailto:devaapatil330@gmail.com",
-    color: "#00e5ff",
-  },
-  {
-    icon: Phone,
-    label: "Phone",
-    value: "+91 9518331190",
-    href: "tel:+919518331190",
-    color: "#39ff14",
-  },
-  {
-    icon: MapPin,
-    label: "Location",
-    value: "Pune, Maharashtra, India",
-    href: null,
-    color: "#ffb700",
-  },
-];
 
-const fallbackSocials = [
-  {
-    icon: Github,
-    label: "GitHub",
-    href: "https://github.com/Devanandfarkade",
-    color: "#ffffff",
-  },
-  {
-    icon: Linkedin,
-    label: "LinkedIn",
-    href: "https://linkedin.com/in/devanandfarkade",
-    color: "#0077b5",
-  },
-];
 
 function InputField({
   label,
@@ -91,10 +54,13 @@ function InputField({
   );
 }
 
-export default function Contact() {
+import Skeleton from '@mui/material/Skeleton';
+
+export default function Contact({ showSkeleton }) {
   const formRef = useRef(null);
   const inView = useInView(formRef, { once: true, margin: "-60px" });
   const [profile, setProfile] = useState(null);
+  const [loadingProfile, setLoadingProfile] = useState(true);
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -107,11 +73,15 @@ export default function Contact() {
     api.getProfile()
       .then((data) => {
         setProfile(data);
+        setLoadingProfile(false);
       })
       .catch((err) => {
         console.error("Failed to load contact settings:", err);
+        setLoadingProfile(false);
       });
   }, []);
+
+  const isLoading = loadingProfile || showSkeleton;
 
   const contactInfo = [
     {
@@ -206,36 +176,40 @@ export default function Contact() {
 
               {/* Contact info cards */}
               <div className="space-y-2.5">
-                {contactInfo.map(({ icon: Icon, label, value, href, color }) => (
-                  <div
-                    key={label}
-                    className="group flex items-center gap-3.5 p-3 rounded-xl bg-surface/50 border border-accent-2/15 hover:border-accent/40 hover:bg-surface-2/40 transition-all duration-300"
-                  >
+                {isLoading ? (
+                  [1,2,3].map(i => <Skeleton key={i} variant="rounded" height={60} className="bg-surface-2/40 rounded-xl" />)
+                ) : (
+                  contactInfo.map(({ icon: Icon, label, value, href, color }) => (
                     <div
-                      className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
-                      style={{ backgroundColor: color + "10" }}
+                      key={label}
+                      className="group flex items-center gap-3.5 p-3 rounded-xl bg-surface/50 border border-accent-2/15 hover:border-accent/40 hover:bg-surface-2/40 transition-all duration-300"
                     >
-                      <Icon size={14} style={{ color }} />
-                    </div>
-                    <div>
-                      <div className="font-mono-hacker text-[9px] text-accent-2 mb-0.5 tracking-widest">
-                        {label.toUpperCase()}
+                      <div
+                        className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
+                        style={{ backgroundColor: color + "10" }}
+                      >
+                        <Icon size={14} style={{ color }} />
                       </div>
-                      {href ? (
-                        <a
-                          href={href}
-                          className="font-mono-hacker text-xs text-text-primary hover:text-accent transition-colors"
-                        >
-                          {value}
-                        </a>
-                      ) : (
-                        <span className="font-mono-hacker text-xs text-text-primary">
-                          {value}
-                        </span>
-                      )}
+                      <div>
+                        <div className="font-mono-hacker text-[9px] text-accent-2 mb-0.5 tracking-widest">
+                          {label.toUpperCase()}
+                        </div>
+                        {href ? (
+                          <a
+                            href={href}
+                            className="font-mono-hacker text-xs text-text-primary hover:text-accent transition-colors"
+                          >
+                            {value}
+                          </a>
+                        ) : (
+                          <span className="font-mono-hacker text-xs text-text-primary">
+                            {value}
+                          </span>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             </div>
 
@@ -244,19 +218,23 @@ export default function Contact() {
               <div className="cyber-card p-4 rounded-xl flex items-center justify-between">
                 <span className="font-mono-hacker text-[10px] text-accent-2 uppercase tracking-widest">&gt; SOCIAL_CHANNELS</span>
                 <div className="flex gap-2">
-                  {socials.map(({ icon: Icon, label, href }) => (
-                    <motion.a
-                      key={label}
-                      href={href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={label}
-                      whileHover={{ scale: 1.05, y: -1 }}
-                      className="w-7 h-7 flex items-center justify-center rounded bg-surface border border-accent-2/20 hover:border-accent text-text-secondary hover:text-accent transition-all duration-200"
-                    >
-                      <Icon size={12} />
-                    </motion.a>
-                  ))}
+                  {isLoading ? (
+                    <Skeleton variant="rounded" width={80} height={28} className="bg-surface-2/40 rounded" />
+                  ) : (
+                    socials.map(({ icon: Icon, label, href }) => (
+                      <motion.a
+                        key={label}
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={label}
+                        whileHover={{ scale: 1.05, y: -1 }}
+                        className="w-7 h-7 flex items-center justify-center rounded bg-surface border border-accent-2/20 hover:border-accent text-text-secondary hover:text-accent transition-all duration-200"
+                      >
+                        <Icon size={12} />
+                      </motion.a>
+                    ))
+                  )}
                 </div>
               </div>
 
@@ -280,7 +258,20 @@ export default function Contact() {
           >
             <div className="p-6 lg:p-8 rounded-3xl cyber-card flex-1 flex flex-col justify-center max-h-[60vh] lg:max-h-[72vh]">
               <div className="w-full overflow-y-auto cyber-scrollbar pr-2 max-h-full">
-                {status === "success" ? (
+                {isLoading ? (
+                  <div className="space-y-4">
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <Skeleton variant="rounded" height={60} className="bg-surface-2/40 rounded-xl" />
+                      <Skeleton variant="rounded" height={60} className="bg-surface-2/40 rounded-xl" />
+                    </div>
+                    <Skeleton variant="rounded" height={60} className="bg-surface-2/40 rounded-xl" />
+                    <Skeleton variant="rounded" height={150} className="bg-surface-2/40 rounded-xl" />
+                    <div className="flex gap-3">
+                      <Skeleton variant="rounded" height={45} className="bg-surface-2/40 rounded-xl flex-1" />
+                      <Skeleton variant="rounded" height={45} className="bg-surface-2/40 rounded-xl flex-1" />
+                    </div>
+                  </div>
+                ) : status === "success" ? (
                   <motion.div
                     initial={{ scale: 0.9, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}

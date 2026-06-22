@@ -7,12 +7,7 @@ import ViewportCanvas from './ViewportCanvas';
 import { useScrollIndicator, ScrollIndicator } from './ScrollIndicator';
 import { api } from '../services/api';
 
-const fallbackCerts = [
-  { id: 1, title: 'Java Full Stack Development', issuer: 'QSpiders Wakad, Pune', date: 'Mar 2023 - Sep 2023', credId: 'QS-JFS-2023', link: 'https://qspiders.com', color: '#39ff14', icon: '☕', skills: ['Java', 'SQL', 'Web Technologies', 'J2EE'] },
-  { id: 2, title: 'Java Full Stack Development', issuer: 'Symbiosis (Capgemini), Pune', date: 'Jun 2024 - Aug 2024', credId: 'SYM-CAP-24', link: 'https://capgemini.com', color: '#00e5ff', icon: '💻', skills: ['Enterprise Java', 'Spring Boot', 'Angular', 'Agile'] },
-  { id: 3, title: "Technology's Impact on Business", issuer: 'HP LIFE Online Course', date: 'Oct 2022 - Nov 2022', credId: 'HP-LIFE-2022', link: 'https://life-global.org', color: '#ffb700', icon: '📊', skills: ['Business IT', 'Tech Strategy', 'Analytics'] },
-  { id: 4, title: 'Basics of Java Certification', issuer: 'CodeChef', date: 'Aug 23', credId: 'CC-JAVA-23', link: 'https://codechef.com', color: '#ff007f', icon: '🍳', skills: ['Java Basics', 'OOPs', 'Problem Solving'] },
-];
+
 
 function CertCard({ cert, index }) {
   const ref = useRef(null);
@@ -55,7 +50,9 @@ function CertCard({ cert, index }) {
   );
 }
 
-export default function Certifications() {
+import Skeleton from '@mui/material/Skeleton';
+
+export default function Certifications({ showSkeleton }) {
   const [certsList, setCertsList] = useState([]);
   const [loading, setLoading] = useState(true);
   const scrollRef = useRef(null);
@@ -86,7 +83,8 @@ export default function Certifications() {
       });
   }, []);
 
-  const displayCerts = certsList.length > 0 ? certsList : fallbackCerts;
+  const isLoading = loading || showSkeleton;
+  const displayCerts = certsList || [];
 
   return (
     <section id="certifications" className="relative lg:h-screen lg:max-h-screen lg:min-h-[600px] flex items-center py-12 lg:py-0 bg-surface/5 overflow-hidden hacker-grid">
@@ -101,16 +99,24 @@ export default function Certifications() {
           
           {/* 3D Medal scene (Left Column) */}
           <div className="relative w-full h-[300px] lg:h-auto rounded-3xl overflow-hidden border border-accent/20 bg-surface/20">
-            <ViewportCanvas title="3D_CERTIFICATIONS_MODEL">
-              <CertsScene />
-            </ViewportCanvas>
+            {isLoading ? (
+              <Skeleton variant="rectangular" width="100%" height="100%" className="bg-surface-2/40" />
+            ) : (
+              <ViewportCanvas title="3D_CERTIFICATIONS_MODEL">
+                <CertsScene />
+              </ViewportCanvas>
+            )}
           </div>
 
           {/* Cert cards list (Right Column - matching height) */}
           <div className="cyber-card p-6 lg:p-8 rounded-3xl flex flex-col justify-between max-h-[60vh] lg:max-h-[72vh] relative">
             <div ref={scrollRef} className="flex-1 overflow-y-auto pr-3 cyber-scrollbar">
               <div className="grid sm:grid-cols-2 gap-3.5">
-                {displayCerts.map((cert, i) => <CertCard key={cert.id} cert={cert} index={i} />)}
+                {isLoading ? (
+                  [1,2,3,4].map(i => <Skeleton key={i} variant="rounded" height={140} className="bg-surface-2/40 rounded-xl w-full" />)
+                ) : (
+                  displayCerts.map((cert, i) => <CertCard key={cert.id} cert={cert} index={i} />)
+                )}
               </div>
             </div>
 

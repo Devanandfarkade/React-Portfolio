@@ -14,15 +14,36 @@ import CustomCursor from './components/CustomCursor';
 import EmailTemplate from './components/EmailTemplate';
 import AdminLogin from './components/AdminLogin';
 import AdminDashboard from './components/AdminDashboard';
+import ServerOffline from './components/ServerOffline';
+import { api } from './services/api';
 
 export default function App() {
   const [hash, setHash] = useState(window.location.hash);
+  const [serverStatus, setServerStatus] = useState('checking'); // 'checking' | 'online' | 'offline_grace' | 'offline'
+
+  const checkServerStatus = async () => {
+    setServerStatus('checking');
+    try {
+      await api.getProfile();
+      setServerStatus('online');
+    } catch (error) {
+      console.error("Server connection failed:", error);
+      setServerStatus('offline_grace');
+      setTimeout(() => {
+        setServerStatus(prev => prev === 'offline_grace' ? 'offline' : prev);
+      }, 15000);
+    }
+  };
 
   useEffect(() => {
     const handleHashChange = () => {
       setHash(window.location.hash);
     };
     window.addEventListener('hashchange', handleHashChange);
+    
+    // Initial server check
+    checkServerStatus();
+
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
@@ -38,18 +59,40 @@ export default function App() {
     return <AdminDashboard />;
   }
 
+  if (serverStatus === 'offline') {
+    return (
+      <>
+        <CustomCursor />
+        <ServerOffline onRetry={checkServerStatus} />
+      </>
+    );
+  }
+
+  // Show nothing while checking initial server status
+  if (serverStatus === 'checking') {
+    return (
+      <>
+        <CustomCursor />
+        <div className="min-h-screen bg-bg scanline-overlay flex items-center justify-center text-accent font-mono-hacker">Initializing connection...</div>
+      </>
+    );
+  }
+
+  const showSkeleton = serverStatus === 'offline_grace';
+
   return (
     <div className="min-h-screen bg-bg text-text-primary scanline-overlay">
       <CustomCursor />
       <Navbar />
       <main className="space-y-0">
-        <Hero />
-        <About />
-        <Skills />
-        <Projects />
-        <Experience />
-        <Education />
-        <Certifications />
+        <Hero showSkeleton={showSkeleton} />
+        <About showSkeleton={showSkeleton} />
+        <Skills showSkeleton={showSkeleton} />
+        <Projects showSkeleton={showSkeleton} />
+        <Experience showSkeleton={showSkeleton} />
+        <Education showSkeleton={showSkeleton} />
+        <Certifications showSkeleton={showSkeleton} />
+
         
         {/* Hacker Terminal Interactive Section */}
         <section className="relative py-12 bg-bg max-w-7xl mx-auto px-6 lg:px-12 hacker-grid">
@@ -58,7 +101,7 @@ export default function App() {
           </div>
         </section>
 
-        <Contact />
+        <Contact showSkeleton={showSkeleton} />
       </main>
       <Footer />
     </div>
