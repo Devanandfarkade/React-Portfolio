@@ -11,6 +11,8 @@ import {
   CheckCircle,
   Loader,
   Eye,
+  CornerDownRight,
+  Terminal,
 } from "lucide-react";
 import SectionTitle from "./SectionTitle";
 import { api } from "../services/api";
@@ -125,9 +127,13 @@ export default function Contact({ showSkeleton }) {
   const handleChange = (e) =>
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
-  const handleSubmit = async (e) => {
+  const handleShowPreview = (e) => {
     e.preventDefault();
     if (!form.name || !form.email || !form.message) return;
+    setStatus("preview");
+  };
+
+  const handleConfirmSend = async () => {
     setStatus("loading");
 
     try {
@@ -299,8 +305,114 @@ export default function Contact({ showSkeleton }) {
                       An error occurred routing the packet. Please email directly.
                     </p>
                   </motion.div>
+                ) : (status === "preview" || status === "loading") ? (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="flex flex-col gap-4 text-left h-full"
+                  >
+                    {/* Preview Title */}
+                    <div className="flex items-center justify-between border-b border-[#00e5ff]/20 pb-2">
+                      <div className="flex items-center gap-2">
+                        <Terminal size={14} className="text-[#00e5ff]" />
+                        <span className="font-mono-hacker text-xs font-bold text-[#e6f7f4]">PREVIEW_TRANSMISSION_PACKET</span>
+                      </div>
+                      <span className="text-[9px] text-[#ffb700] border border-[#ffb700]/20 px-1.5 py-0.5 rounded bg-black font-mono-hacker">
+                        {status === "loading" ? "ROUTING_PACKET" : "UNSENT_DRAFT"}
+                      </span>
+                    </div>
+
+                    {/* Email Mockup Preview */}
+                    <div className="rounded-xl border border-accent/20 bg-black/60 overflow-hidden flex flex-col shadow-inner">
+                      {/* Email Header */}
+                      <div className="p-3 border-b border-[#0e1530] space-y-1 text-[11px] text-[#8da4a6] bg-[#070c19]">
+                        <div>
+                          <span className="font-bold text-accent">From:</span> Devanand's Core Router &lt;system@deva.core&gt;
+                        </div>
+                        <div>
+                          <span className="font-bold text-accent-2">To:</span> {profile?.email || "devaapatil330@gmail.com"}
+                        </div>
+                        <div>
+                          <span className="font-bold text-accent-3">Subject:</span> <span className="text-white font-bold">TRANSMISSION: {form.subject || "CONTACT_MESSAGE"} [SECURE_SHELL]</span>
+                        </div>
+                      </div>
+
+                      {/* Email Body */}
+                      <div className="p-4 bg-[#04060c] text-[10px] leading-relaxed space-y-3 select-text font-mono-hacker max-h-[220px] overflow-y-auto cyber-scrollbar">
+                        <div className="border border-accent-2/20 bg-surface/30 p-2.5 rounded-lg flex items-center justify-between">
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-accent font-bold">&lt;DEVA_CORE /&gt;</span>
+                            <span className="text-[8px] text-[#8da4a6] border border-[#00e5ff]/20 px-1 py-0.5 rounded bg-black">SYS_ALERT</span>
+                          </div>
+                          <span className="text-[8px] text-accent font-mono-hacker">SECURE DISPATCH</span>
+                        </div>
+
+                        {/* Email Info Table */}
+                        <div className="space-y-1 bg-black/50 p-2.5 rounded-lg border border-[#0e1530] font-mono-hacker text-[10px] text-[#8da4a6]">
+                          <div className="flex justify-between border-b border-[#0e1530]/50 pb-0.5">
+                            <span>TRANSMISSION_STATUS:</span>
+                            <span className="text-accent font-bold">
+                              {status === "loading" ? "TRANSMITTING..." : "READY_TO_ROUTE"}
+                            </span>
+                          </div>
+                          <div className="flex justify-between border-b border-[#0e1530]/50 py-0.5">
+                            <span>SENDER_IDENT:</span>
+                            <span className="text-white">{form.name}</span>
+                          </div>
+                          <div className="flex justify-between border-b border-[#0e1530]/50 py-0.5">
+                            <span>SENDER_EMAIL:</span>
+                            <span className="text-accent-2">{form.email}</span>
+                          </div>
+                          <div className="flex justify-between pt-0.5">
+                            <span>IP_ROUTING_ROUTE:</span>
+                            <span className="text-accent-3">127.0.0.1</span>
+                          </div>
+                        </div>
+
+                        {/* Email Message Text */}
+                        <div className="space-y-1 bg-black/30 p-2.5 rounded-lg border border-[#0e1530]/80">
+                          <div className="text-[8px] text-[#8da4a6] uppercase tracking-widest flex items-center gap-0.5">
+                            <CornerDownRight size={8} /> Message Payload
+                          </div>
+                          <p className="text-[#e6f7f4] leading-relaxed whitespace-pre-wrap font-sans text-[11px]">
+                            {form.message}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Preview Actions */}
+                    <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                      <button
+                        type="button"
+                        onClick={() => setStatus("idle")}
+                        disabled={status === "loading"}
+                        className="flex-1 flex items-center justify-center gap-2 px-5 py-3 border border-accent-2/30 text-accent-2 hover:bg-accent-2/5 rounded-xl transition-all duration-300 font-mono-hacker font-bold text-xs disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        EDIT_TRANSMISSION
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleConfirmSend}
+                        disabled={status === "loading"}
+                        className="flex-1 flex items-center justify-center gap-2 px-5 py-3 btn-hacker font-bold rounded-xl transition-all duration-300 text-xs disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {status === "loading" ? (
+                          <>
+                            <Loader size={12} className="animate-spin" />
+                            TRANSMITTING...
+                          </>
+                        ) : (
+                          <>
+                            <Send size={12} />
+                            CONFIRM_SEND
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </motion.div>
                 ) : (
-                  <form onSubmit={handleSubmit} className="space-y-4">
+                  <form onSubmit={handleShowPreview} className="space-y-4">
                     <div className="grid sm:grid-cols-2 gap-4">
                       <InputField
                         label="YOUR_NAME"
@@ -342,17 +454,8 @@ export default function Contact({ showSkeleton }) {
                         whileTap={{ scale: 0.99 }}
                         className="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 btn-hacker font-bold rounded-xl disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-300 text-xs"
                       >
-                        {status === "loading" ? (
-                          <>
-                            <Loader size={14} className="animate-spin" />
-                            TRANSMITTING...
-                          </>
-                        ) : (
-                          <>
-                            <Send size={14} />
-                            SEND MESSAGE
-                          </>
-                        )}
+                        <Send size={14} />
+                        SEND MESSAGE
                       </motion.button>
 
                       <a
