@@ -1,6 +1,7 @@
 import { useEffect, useRef, memo } from "react";
 
 const TWO_PI = Math.PI * 2;
+// Adding new Features
 
 const DotField = memo(
   ({
